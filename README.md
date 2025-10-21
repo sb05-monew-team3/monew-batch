@@ -1,7 +1,3 @@
-좋아요! 😄
-그럼 이전 README를 기반으로 **6명 팀원 GitHub 링크 포함**해서 업데이트한 Markdown 버전을 만들어드릴게요.
-팀원별 카드형 테이블 형태로 보기 좋게 정리했습니다.
-
 ```markdown
 # 📰 Monu 프로젝트
 > MongoDB 및 PostgreSQL 백업/복구 기반 뉴스 통합 플랫폼
