@@ -1,8 +1,5 @@
-```markdown
 # 📰 Monu 프로젝트
 > MongoDB 및 PostgreSQL 백업/복구 기반 뉴스 통합 플랫폼
-
-![Monu](https://capsule-render.vercel.app/api?type=transparent&fontColor=003fd2&text=Monu&height=150&fontSize=70&desc=뉴스 통합 & 백업/복구 플랫폼&descSize=15&descAlignY=75&descAlign=44.5)
 
 - **프로젝트 기간:** 2025.10.21 ~ 2025.11.15  
 - **API 명세서:** [Swagger UI ↗](#)  
@@ -12,9 +9,9 @@
 ---
 
 ## 📖 프로젝트 소개
-> Monu는 여러 뉴스 API를 통합하여 사용자 맞춤 뉴스를 제공하고, 사용자 활동 내역 및 의견을 기록/관리할 수 있는 플랫폼입니다.  
-> PostgreSQL과 MongoDB 기반으로 데이터를 안전하게 저장하고, Spring Batch로 뉴스 백업/수집을 자동화합니다.  
-> 운영 및 모니터링은 Spring Actuator와 Prometheus를 활용하며, 대용량 데이터 처리와 안정성을 고려한 설계가 적용됩니다.  
+Monu는 여러 뉴스 API를 통합하여 사용자 맞춤 뉴스를 제공하고, 사용자 활동 내역 및 의견을 기록/관리할 수 있는 플랫폼입니다.  
+PostgreSQL과 MongoDB 기반으로 데이터를 안전하게 저장하고, Spring Batch로 뉴스 백업/수집을 자동화합니다.  
+운영 및 모니터링은 Spring Actuator와 Prometheus를 활용하며, 대용량 데이터 처리와 안정성을 고려한 설계가 적용됩니다.  
 
 ---
 
@@ -34,23 +31,22 @@
 ## 🧩 기술 스택
 
 ### ⚙️ Backend
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)  
-![MapStruct](https://img.shields.io/badge/MapStruct-000000?style=for-the-badge&logo=mapstruct&logoColor=white)  
-![JPA](https://img.shields.io/badge/JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white)  
+- Spring Boot
+- MapStruct
+- JPA
 
 ### 🗄 Database
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)  
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)  
+- PostgreSQL
+- MongoDB
 
 ### 🚀 Batch / Monitoring
-![Spring Batch](https://img.shields.io/badge/Spring%20Batch-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)  
-![Spring Actuator](https://img.shields.io/badge/Actuator-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)  
+- Spring Batch
+- Spring Actuator
 
 ### 🤝 협업 Tool
-![Git](https://img.shields.io/badge/Git-F05033?style=for-the-badge&logo=git&logoColor=white)  
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)  
-![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)  
-![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)  
+- Git / GitHub
+- Notion
+- Discord
 
 ---
 
@@ -83,25 +79,22 @@
 ---
 
 ## 📂 프로젝트 구조 (예시)
-```
 
-monu-mvc/
-├─src/
-│   ├─main/
-│   │   ├─java/
-│   │   │   └─com/monu
-│   │   │       ├─config/
-│   │   │       ├─controller/
-│   │   │       ├─dto/
-│   │   │       ├─entity/
-│   │   │       ├─repository/
-│   │   │       ├─service/
-│   │   │       └─util/
-│   │   └─resources/
-│   │       └─application.yml
-└─test/
-
-```
+monu-mvc/  
+├─ src/  
+│   ├─ main/  
+│   │   ├─ java/  
+│   │   │   └─ com/monu/  
+│   │   │       ├─ config/  
+│   │   │       ├─ controller/  
+│   │   │       ├─ dto/  
+│   │   │       ├─ entity/  
+│   │   │       ├─ repository/  
+│   │   │       ├─ service/  
+│   │   │       └─ util/  
+│   │   └─ resources/  
+│   │       └─ application.yml  
+└─ test/  
 
 ---
 
@@ -115,6 +108,3 @@ monu-mvc/
 | 이성훈 | API 서버 개발, DB 쿼리 최적화 |
 | 박지석 | 서비스 로직, 테스트 코드 작성 |
 | 김용희 | 백업/복구 기능, 데이터 안정성 검증 |
-```
-
----
