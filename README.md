@@ -2,7 +2,7 @@
 > MongoDB 및 PostgreSQL 백업/복구 기반 뉴스 통합 플랫폼
 
 - **프로젝트 기간:** 2025.10.17 ~ 2025.11.10  
-- **API 명세서:** [Swagger UI ↗](#)  
+- **API 명세서:** [Swagger UI ↗](http://sprint-project-1196140422.ap-northeast-2.elb.amazonaws.com/sb/monew/api/swagger-ui/index.html)  
 - **협업 문서:** [Notion ↗](https://polydactyl-pufferfish-876.notion.site/MoNew-28e08cfefb45803ebd28ffcd05a97b2e?source=copy_link)
 - **이슈 관리:** [GitHub Issue Tracker ↗](*#)
 - **커뮤니케이션: Discord  
