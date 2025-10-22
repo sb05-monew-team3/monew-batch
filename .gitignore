@@ -82,7 +82,5 @@ target/
 *.war
 *.ear
 
-### QGIS or local config (optional) ###
-config/style/
 
 .idea
