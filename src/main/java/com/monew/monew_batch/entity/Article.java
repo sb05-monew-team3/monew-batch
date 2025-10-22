@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monew.monew_batch.entity.common.BaseDeletableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

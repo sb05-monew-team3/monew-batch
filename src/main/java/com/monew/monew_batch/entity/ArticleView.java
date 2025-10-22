@@ -1,6 +1,7 @@
 package com.monew.monew_batch.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monew.monew_batch.entity.common.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

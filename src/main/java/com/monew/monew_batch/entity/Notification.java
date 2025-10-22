@@ -3,6 +3,7 @@ package com.monew.monew_batch.entity;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.monew.monew_batch.entity.common.BaseUpdatableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
