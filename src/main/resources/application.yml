@@ -1,0 +1,28 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: monew_batch
+    version: 1.0.0
+  profiles:
+    active: local
+  batch:
+    job:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,batch,scheduledtasks
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    batch:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
+
