@@ -4,15 +4,15 @@ spring:
     activate:
       on-profile: local
 
-  boot:
-    admin:
-      client:
-        url: http://localhost:9090
-        enabled: true
-        instance:
-          name: monew_batch
-          service-url: http://localhost:8082
-          management-base-url: http://localhost:8082
+  #  boot:
+  #    admin:
+  #      client:
+  #        url: http://localhost:9090
+  #        enabled: true
+  #        instance:
+  #          name: monew_batch
+  #          service-url: http://localhost:8082
+  #          management-base-url: http://localhost:8082
 
   batch:
     job:
@@ -20,25 +20,17 @@ spring:
     jdbc:
       initialize-schema: always
 
-  datasource:
+  datasource-data:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:${DB_LOCAL_PORT:5432}/${DB_LOCAL_DB_NAME:monew}
+    jdbc-url: jdbc:postgresql://localhost:${DB_LOCAL_PORT:5432}/${DB_LOCAL_DB_NAME:monew}
     username: ${DB_LOCAL_USER:postgres}
     password: ${DB_LOCAL_PASSWORD:1234}
 
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        highlight_sql: true
-        use_sql_comments: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        jdbc.time_zone: UTC
-    open-in-view: false
+  datasource-meta:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:${DB_LOCAL_METADATA_PORT:5432}/${DB_LOCAL_METADATA_DB_NAME:monew_batch_metadata}
+    username: ${DB_LOCAL_METADATA_USER:postgres}
+    password: ${DB_LOCAL_METADATA_PASSWORD:1234}
 
 logging:
   level:

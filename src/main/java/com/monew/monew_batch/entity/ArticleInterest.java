@@ -1,0 +1,41 @@
+package com.monew.monew_batch.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Table(name = "article_interests",
+	uniqueConstraints = @UniqueConstraint(
+		name = "uk_article_interests_article_id_interest_id",
+		columnNames = {"article_id", "interest_id"}
+	))
+@Getter
+@Setter
+@SuperBuilder
+@ToString(callSuper = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ArticleInterest extends BaseEntity {
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "article_id", nullable = false)
+	private Article article;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "interest_id", nullable = false)
+	private Interest interest;
+}
