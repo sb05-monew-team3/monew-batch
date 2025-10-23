@@ -1,11 +1,11 @@
-package com.monew.monew_batch.job.article.externalApi.naver.dto;
+package com.monew.monew_batch.article.naver.dto;
 
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class NaverNewsResponse {
+public class NaverArticleResponse {
 	String lastBuildDate;
 	int total;
 	int start;

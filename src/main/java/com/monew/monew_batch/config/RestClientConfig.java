@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
-import com.monew.monew_batch.job.article.externalApi.naver.NaverApiProperties;
+import com.monew.monew_batch.article.naver.NaverApiProperties;
 
 import lombok.RequiredArgsConstructor;
 
