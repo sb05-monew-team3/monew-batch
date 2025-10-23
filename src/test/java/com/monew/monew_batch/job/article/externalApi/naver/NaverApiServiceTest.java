@@ -18,7 +18,7 @@ public class NaverApiServiceTest {
 	@Test
 	@DisplayName("네이버 api 데이터 한번 가져와 보기 ")
 	public void getNewsTest() {
-		NaverNewsResponse sim = naverApiService.getNews("정치", 10, 1, "sim");
+		NaverNewsResponse sim = naverApiService.getNews("윤석열", 10, 1, "sim");
 
 		System.out.println("===== 네이버 뉴스 API 결과 =====");
 		System.out.println("total: " + sim.getTotal());
