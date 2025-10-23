@@ -17,9 +17,9 @@ public class RestClientConfig {
 	@Bean
 	public RestClient naverRestClient() {
 		return RestClient.builder()
-			.baseUrl(naverApiProperties.baseUrl())
-			.defaultHeader("X-Naver-Client-Id", naverApiProperties.clientId())
-			.defaultHeader("X-Naver-Client-Secret", naverApiProperties.clientSecret())
+			.baseUrl(naverApiProperties.getBaseUrl())
+			.defaultHeader("X-Naver-Client-Id", naverApiProperties.getClientId())
+			.defaultHeader("X-Naver-Client-Secret", naverApiProperties.getClientSecret())
 			.defaultHeader("Accept", "application/json")
 			.defaultHeader("User-Agent", "Mozilla/5.0")
 			.build();
