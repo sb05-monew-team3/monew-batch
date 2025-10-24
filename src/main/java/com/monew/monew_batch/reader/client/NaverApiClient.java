@@ -1,4 +1,4 @@
-package com.monew.monew_batch.reader;
+package com.monew.monew_batch.reader.client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NaverNewsApiReader {
+public class NaverApiClient {
 
 	private final ArticleMapper articleMapper;
 	private final RestClient naverRestClient;
 
-	public List<ArticleSaveDto> getNews(String query, int display, int start, String sort) {
+	/**
+	 *
+	 * @param query : 키워드
+	 * @param display : 한 페이지 수
+	 * @param start : 페이지 수
+	 * @param sort : 정렬 기준 "sim: 정확도 내림차", "date: 날짜순 내림차 "
+	 * @return
+	 */
+	public List<ArticleSaveDto> fetchArticles(String query, int display, int start, String sort) {
 		try {
 			NaverArticleResponse body = naverRestClient.get()
 				.uri(uriBuilder -> uriBuilder
@@ -50,4 +58,5 @@ public class NaverNewsApiReader {
 			throw new RuntimeException("네이버 뉴스 API 호출 실패: " + e.getMessage(), e);
 		}
 	}
+
 }
