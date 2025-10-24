@@ -1,4 +1,4 @@
-package com.monew.monew_batch.article.util;
+package com.monew.monew_batch.util;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;

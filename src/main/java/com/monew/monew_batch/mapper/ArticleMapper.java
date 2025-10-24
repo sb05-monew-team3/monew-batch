@@ -1,13 +1,14 @@
-package com.monew.monew_batch.article.mapper;
+package com.monew.monew_batch.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.monew.monew_batch.article.hankyung.dto.HankyungArticleResponse;
-import com.monew.monew_batch.article.naver.dto.NaverArticleResponse;
+import com.monew.monew_batch.reader.dto.HankyungArticleResponse;
+import com.monew.monew_batch.reader.dto.NaverArticleResponse;
+import com.monew.monew_batch.util.DataTimeParser;
 import com.monew.monew_batch.writer.dto.ArticleSaveDto;
 
-@Mapper(componentModel = "spring", imports = {com.monew.monew_batch.article.util.DataTimeParser.class})
+@Mapper(componentModel = "spring", imports = {DataTimeParser.class})
 public interface ArticleMapper {
 
 	@Mapping(target = "source", constant = "NAVER")

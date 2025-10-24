@@ -1,4 +1,4 @@
-package com.monew.monew_batch.article.hankyung;
+package com.monew.monew_batch.reader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.monew.monew_batch.article.RssArticleService;
-import com.monew.monew_batch.article.hankyung.dto.HankyungArticleResponse;
-import com.monew.monew_batch.article.mapper.ArticleMapper;
+import com.monew.monew_batch.mapper.ArticleMapper;
+import com.monew.monew_batch.reader.dto.HankyungArticleResponse;
 import com.monew.monew_batch.writer.dto.ArticleSaveDto;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class HankyungArticleService implements RssArticleService {
+public class HankyungArticleService {
 
 	private final ArticleMapper articleMapper;
 	private RestClient hankyungRestClient;
@@ -52,7 +51,6 @@ public class HankyungArticleService implements RssArticleService {
 	 * 			throw new RuntimeException("네이버 뉴스 API 호출 실패: " + e.getMessage(), e);        * 		}
 	 */
 
-	@Override
 	public List<ArticleSaveDto> getArticleList(String feed) {
 		try {
 			HankyungArticleResponse body = hankyungRestClient.get()
@@ -65,7 +63,6 @@ public class HankyungArticleService implements RssArticleService {
 			if (body == null || body.getChannel() == null || body.getChannel().getItems() == null) {
 				return articleSaveDtos;
 			}
-
 			body.getChannel().getItems().forEach(item -> {
 				ArticleSaveDto articleSaveDto = articleMapper.toArticleSaveDto(item);
 				articleSaveDtos.add(articleSaveDto);

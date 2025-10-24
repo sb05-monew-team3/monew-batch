@@ -1,4 +1,4 @@
-package com.monew.monew_batch.article.hankyung;
+package com.monew.monew_batch.properties;
 
 import java.util.List;
 

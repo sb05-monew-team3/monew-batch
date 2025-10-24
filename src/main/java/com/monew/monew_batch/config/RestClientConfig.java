@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
-import com.monew.monew_batch.article.naver.NaverApiProperties;
+import com.monew.monew_batch.properties.NaverArticleApiProperties;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RestClientConfig {
 
-	private final NaverApiProperties naverApiProperties;
+	private final NaverArticleApiProperties naverArticleApiProperties;
 
 	@Bean
 	public RestClient naverRestClient() {
 		return RestClient.builder()
-			.baseUrl(naverApiProperties.getBaseUrl())
-			.defaultHeader("X-Naver-Client-Id", naverApiProperties.getClientId())
-			.defaultHeader("X-Naver-Client-Secret", naverApiProperties.getClientSecret())
+			.baseUrl(naverArticleApiProperties.getBaseUrl())
+			.defaultHeader("X-Naver-Client-Id", naverArticleApiProperties.getClientId())
+			.defaultHeader("X-Naver-Client-Secret", naverArticleApiProperties.getClientSecret())
 			.defaultHeader("Accept", "application/json")
 			.defaultHeader("User-Agent", "Mozilla/5.0")
 			.build();

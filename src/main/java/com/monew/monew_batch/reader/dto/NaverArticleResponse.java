@@ -1,4 +1,4 @@
-package com.monew.monew_batch.article.naver.dto;
+package com.monew.monew_batch.reader.dto;
 
 import java.util.List;
 
