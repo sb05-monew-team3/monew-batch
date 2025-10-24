@@ -16,7 +16,7 @@ public interface ArticleMapper {
 	@Mapping(target = "title", source = "item.title")
 	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.pubDate))")
 	@Mapping(target = "summary", source = "item.description")
-	ArticleSaveDto toArticleSaveDto(NaverArticleResponse.NewsItem item);
+	ArticleSaveDto toArticleSaveDto(NaverArticleResponse.ArticleItem item);
 
 	@Mapping(target = "source", constant = "HANKYUNG")
 	@Mapping(target = "sourceUrl", source = "item.link")

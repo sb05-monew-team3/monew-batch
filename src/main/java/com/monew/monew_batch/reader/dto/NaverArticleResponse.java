@@ -3,6 +3,7 @@ package com.monew.monew_batch.reader.dto;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class NaverArticleResponse {
@@ -10,10 +11,10 @@ public class NaverArticleResponse {
 	int total;
 	int start;
 	int display;
-	List<NewsItem> items;
+	List<ArticleItem> items;
 
 	@Data
-	public static class NewsItem {
+	public static class ArticleItem {
 		String title;
 		String originallink;
 		String link;
