@@ -28,11 +28,3 @@ spring:
     username: ${DB_LOCAL_METADATA_USER:postgres}
     password: ${DB_LOCAL_METADATA_PASSWORD:1234}
 
-logging:
-  level:
-    root: info
-    org.hibernate.SQL: info
-    org.hibernate.orm.jdbc.bind: info
-    org.hibernate.type.descriptor.sql: info
-    org.springframework.web: info
-    com.monew.monew_server: info

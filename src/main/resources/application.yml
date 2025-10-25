@@ -11,7 +11,6 @@ spring:
     job:
       enabled: false
 
-
 management:
   endpoints:
     web:
@@ -29,8 +28,8 @@ management:
 
 naver:
   api:
-    client-id: ${NAVER_CLIENT_ID}
-    client-secret: ${NAVER_CLIENT_SECRET}
+    client-id: ${NAVER_API_CLIENT_ID}
+    client-secret: ${NAVER_API_CLIENT_SECRET}
     base-url: https://openapi.naver.com/v1/search/news.json
 
 hankyung:
