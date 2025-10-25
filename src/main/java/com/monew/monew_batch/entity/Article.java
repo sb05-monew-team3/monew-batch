@@ -2,6 +2,8 @@ package com.monew.monew_batch.entity;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -32,7 +34,8 @@ import lombok.experimental.SuperBuilder;
 public class Article extends BaseDeletableEntity {
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, columnDefinition = "source")
+	@JdbcType(PostgreSQLEnumJdbcType.class)
 	private ArticleSource source;
 
 	@Column(columnDefinition = "text", nullable = false)
