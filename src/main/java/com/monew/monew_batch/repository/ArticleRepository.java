@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.monew.monew_batch.entity.Article;
 
 public interface ArticleRepository extends JpaRepository<Article, UUID> {
+	boolean existsBySourceUrl(String sourceUrl);
 }
