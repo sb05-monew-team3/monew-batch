@@ -1,4 +1,4 @@
-package com.monew.monew_batch.writer.dto;
+package com.monew.monew_batch.job.dto;
 
 import java.time.Instant;
 

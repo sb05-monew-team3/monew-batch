@@ -1,4 +1,4 @@
-package com.monew.monew_batch.reader;
+package com.monew.monew_batch.job.reader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.reader.dto.HankyungArticleResponse;
 import com.monew.monew_batch.mapper.ArticleMapper;
-import com.monew.monew_batch.reader.dto.HankyungArticleResponse;
-import com.monew.monew_batch.writer.dto.ArticleSaveDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

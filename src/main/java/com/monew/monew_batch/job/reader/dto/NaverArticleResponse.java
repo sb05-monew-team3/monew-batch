@@ -1,9 +1,8 @@
-package com.monew.monew_batch.reader.dto;
+package com.monew.monew_batch.job.reader.dto;
 
 import java.util.List;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class NaverArticleResponse {
