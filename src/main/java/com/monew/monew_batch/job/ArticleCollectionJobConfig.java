@@ -1,8 +1,19 @@
 package com.monew.monew_batch.job;
 
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.listener.ExecutionContextPromotionListener;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.processor.ArticleDedupProcessor;
+import com.monew.monew_batch.job.reader.NaverArticleApiReader;
+import com.monew.monew_batch.job.writer.ArticleItemWriter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -10,12 +21,38 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArticleCollectionJobConfig {
 
-	private JobRepository jobRepository;
+	private final JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
 
-	// @Bean
-	// public Job articleCollectionJob() {
-	//
-	// }
+	private final NaverArticleApiReader naverArticleApiReader;
+	private final ArticleDedupProcessor articleDedupProcessor;
+	private final ArticleItemWriter articleItemWriter;
 
+	@Bean
+	public ExecutionContextPromotionListener pagePromotionListener() {
+		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
+		listener.setKeys(new String[] {"currentPage"});
+		listener.setStrict(false);
+		return listener;
+	}
+
+	@Bean
+	public Step naverNewsStep() {
+		int chunk = 100;
+
+		return new StepBuilder("naverNewsStep", jobRepository)
+			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
+			.reader(naverArticleApiReader)
+			.processor(articleDedupProcessor)
+			.writer(articleItemWriter)
+			.listener(pagePromotionListener())
+			.build();
+	}
+
+	@Bean
+	public Job articleCollectionJob() {
+		return new JobBuilder("articleCollectionJob", jobRepository)
+			.start(naverNewsStep())
+			.build();
+	}
 }
