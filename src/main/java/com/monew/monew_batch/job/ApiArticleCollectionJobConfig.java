@@ -50,8 +50,8 @@ public class ApiArticleCollectionJobConfig {
 	}
 
 	@Bean
-	public Job articleCollectionJob() {
-		return new JobBuilder("articleCollectionJob", jobRepository)
+	public Job apiArticleCollectionJob() {
+		return new JobBuilder("apiArticleCollectionJob", jobRepository)
 			.start(naverNewsStep())
 			.build();
 	}
