@@ -45,7 +45,6 @@ public class NaverArticleApiReader implements ItemStreamReader<ArticleSaveDto> {
 			currentPage = p.intValue();
 			log.info("[네이버 기사 주기 작업] JobParameters.page 적용: {}", currentPage);
 		} else if (executionContext.containsKey(CURRENT_PAGE_KEY)) {
-			// 2) 동일 JobInstance 재시작 시에는 ExecutionContext 사용
 			currentPage = executionContext.getInt(CURRENT_PAGE_KEY);
 			log.info("[네이버 기사 주기 작업] ExecutionContext에서 currentPage 로드: {}", currentPage);
 		}

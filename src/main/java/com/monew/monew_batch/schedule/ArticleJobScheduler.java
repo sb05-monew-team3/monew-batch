@@ -25,12 +25,6 @@ public class ArticleJobScheduler {
 	private final JobExplorer jobExplorer;
 	private final Job articleCollectionJob;
 
-	// @EventListener(ApplicationReadyEvent.class)
-	// public void runOnceAtStartup() throws Exception {
-	// 	System.out.println("[배치 시작] 앱 시작 직후 1회 실행");
-	// 	runJob();
-	// }
-
 	@Scheduled(cron = "0 0/1 * * * *")
 	public void runArticleCollectionJob() throws Exception {
 		System.out.println("[배치 시작] 스케줄러에 의해 실행");
@@ -53,7 +47,6 @@ public class ArticleJobScheduler {
 		if (instances.isEmpty())
 			return 1L;
 
-		// 해당 인스턴스의 가장 최근 JobExecution 선택 (완료 우선)
 		List<JobExecution> execs = jobExplorer.getJobExecutions(instances.get(0));
 		JobExecution latest = execs.stream()
 			.sorted(Comparator.comparing(JobExecution::getCreateTime).reversed())
@@ -62,7 +55,6 @@ public class ArticleJobScheduler {
 		if (latest == null)
 			return 1L;
 
-		// JobExecutionContext에서 currentPage 꺼냄 (없으면 1)
 		Integer page = latest.getExecutionContext().getInt("currentPage", 1);
 		return page.longValue();
 	}
