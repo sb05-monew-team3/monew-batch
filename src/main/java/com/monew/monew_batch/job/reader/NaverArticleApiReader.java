@@ -120,13 +120,4 @@ public class NaverArticleApiReader implements ItemStreamReader<ArticleSaveDto> {
 
 		return articleBufferIterator.next();
 	}
-
-	public void update(ExecutionContext executionContext) {
-		log.info("[네이버 기사 주기 작업] update(): currentPage={}", currentPage);
-	}
-
-	@Override
-	public void close() {
-		log.info("[네이버 기사 주기 작업] close()");
-	}
 }
