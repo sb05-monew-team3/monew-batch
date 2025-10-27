@@ -9,7 +9,6 @@ import org.springframework.web.client.RestClient;
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.reader.dto.NaverArticleResponse;
 import com.monew.monew_batch.mapper.ArticleMapper;
-import com.monew.monew_batch.properties.NaverArticleApiProperties;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ public class NaverApiClient {
 
 	private final RestClient naverRestClient;
 	private final ArticleMapper articleMapper;
-	private final NaverArticleApiProperties naverArticleApiProperties;
 
 	public List<ArticleSaveDto> fetchArticles(String query, int display, int start, String sort) {
 		try {

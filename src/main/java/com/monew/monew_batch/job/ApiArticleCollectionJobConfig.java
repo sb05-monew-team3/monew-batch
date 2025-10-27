@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class ArticleCollectionJobConfig {
+public class ApiArticleCollectionJobConfig {
 
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
