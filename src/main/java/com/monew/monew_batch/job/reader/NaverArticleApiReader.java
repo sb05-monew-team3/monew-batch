@@ -42,7 +42,7 @@ public class NaverArticleApiReader implements ItemStreamReader<ArticleSaveDto> {
 			keywords = interestKeywordRepository.findDistinctNames();
 			if (keywords == null || keywords.isEmpty()) {
 				log.info("[네이버 기사 주기 작업] 키워드 없음");
-				throw new IllegalStateException("관심사 키워드가 없어 배치 작업을 중단합니다.");
+				return;
 			}
 			log.info("[네이버 기사 주기 작업] 키워드 로드: {}", keywords);
 		}
@@ -78,7 +78,7 @@ public class NaverArticleApiReader implements ItemStreamReader<ArticleSaveDto> {
 						.getContext())
 					.getStepExecution()
 					.getExecutionContext();
-				ec.putInt("currentPage", nextPage);
+				ec.putInt(CURRENT_PAGE_KEY, nextPage);
 				currentPage = nextPage;
 				articleBufferIterator = null; // 버퍼 초기화
 				keywordIndex = 0; // 키워드 초기화
