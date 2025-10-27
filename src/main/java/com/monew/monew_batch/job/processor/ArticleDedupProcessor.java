@@ -15,8 +15,9 @@ public class ArticleDedupProcessor implements ItemProcessor<ArticleSaveDto, Arti
 	private final ArticleRepository articleRepository;
 
 	@Override
-	public ArticleSaveDto process(ArticleSaveDto item) throws Exception {
+	public ArticleSaveDto process(ArticleSaveDto item) {
 
+		// 이거 N+1 문제 일어남 나중에 해결할 것
 		if (articleRepository.existsBySourceUrl(item.getSourceUrl())) {
 			return null;
 		}
