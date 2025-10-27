@@ -15,6 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class HankyungArticleProperties {
 	private final String baseUrl;
 	private final ArticleSource articleSource = ArticleSource.NAVER;
-	private final List<String> feeds = List.of("economy", "it", "international", "life", "sports", "video", "finance",
+	private final List<String> feeds = List.of("economy", "it", "international", "life", "sports", "finance",
 		"realestate", "politics", "society", "opinion", "entertainment");
 }
