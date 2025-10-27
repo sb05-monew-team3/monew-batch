@@ -23,23 +23,34 @@ public class ArticleJobScheduler {
 
 	private final JobLauncher jobLauncher;
 	private final JobExplorer jobExplorer;
-	private final Job articleCollectionJob;
+	private final Job apiArticleCollectionJob;
+	private final Job rssArticleCollectionJob;
 
 	@Scheduled(cron = "0 0/1 * * * *")
-	public void runArticleCollectionJob() throws Exception {
-		System.out.println("[배치 시작] 스케줄러에 의해 실행");
-		runJob();
+	public void runRssArticleCollectionJob() throws Exception {
+		System.out.println("RSS 기사 배치 시작 스케줄러에 의해 실행");
+		JobParameters params = new JobParametersBuilder()
+			.addLong("rssArticleJob.id", System.currentTimeMillis())
+			.toJobParameters();
+		jobLauncher.run(rssArticleCollectionJob, params);
+
 	}
 
-	private void runJob() throws Exception {
+	@Scheduled(cron = "0 0/1 * * * *")
+	public void runApiArticleCollectionJob() throws Exception {
+		System.out.println("[API 네이버 배치 시작] 스케줄러에 의해 실행");
+		apiArticleRunJob();
+	}
+
+	private void apiArticleRunJob() throws Exception {
 		long nextPage = resolveStartPage();
 
 		JobParameters params = new JobParametersBuilder()
-			.addLong("job.id", System.currentTimeMillis())
-			.addLong("page", nextPage)
+			.addLong("apiArticleJob.id", System.currentTimeMillis())
+			.addLong("apiArticleJob.page", nextPage)
 			.toJobParameters();
 
-		jobLauncher.run(articleCollectionJob, params);
+		jobLauncher.run(apiArticleCollectionJob, params);
 	}
 
 	private long resolveStartPage() {

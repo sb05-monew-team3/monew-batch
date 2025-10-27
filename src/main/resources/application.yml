@@ -34,4 +34,4 @@ naver:
 
 hankyung:
   api:
-    base-url: https://news.hankyung.com/feed
+    base-url: https://www.hankyung.com/feed
