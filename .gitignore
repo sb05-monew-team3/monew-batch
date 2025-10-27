@@ -9,6 +9,8 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
+logs
+
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -56,7 +58,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### Environment files ###
-.env
+src/main/resources/.env
 *.env
 .env.*
 

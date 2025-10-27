@@ -1,4 +1,4 @@
-package com.monew.monew_batch.entity;
+package com.monew.monew_batch.entity.common;
 
 import java.time.Instant;
 

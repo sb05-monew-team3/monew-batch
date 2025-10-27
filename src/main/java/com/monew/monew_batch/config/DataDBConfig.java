@@ -38,9 +38,10 @@ public class DataDBConfig {
 
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", "validate");
-		properties.put("hibernate.show_sql", "true");
+		properties.put("hibernate.show_sql", "false");
 		properties.put("hibernate.physical_naming_strategy",
 			"org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+		properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
 		em.setJpaPropertyMap(properties);
 		return em;
