@@ -13,6 +13,7 @@ import com.monew.monew_batch.job.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.processor.ArticleDedupProcessor;
 import com.monew.monew_batch.job.reader.ChosunArticleRssReader;
 import com.monew.monew_batch.job.reader.HankyungArticleRssReader;
+import com.monew.monew_batch.job.reader.YonhapArticleRssReader;
 import com.monew.monew_batch.job.writer.ArticleItemWriter;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,12 @@ public class RssArticleCollectionJobConfig {
 
 	private final ChosunArticleRssReader chosunArticleRssReader;
 	private final HankyungArticleRssReader hankyungArticleRssReader;
+	private final YonhapArticleRssReader yonhapArticleRssReader;
+
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
+
+	private int chunk = 100;
 
 	/**
 	 * 스프링 배치-> 잡 인스턴스가 중단되면 어떻게되나
@@ -35,8 +40,17 @@ public class RssArticleCollectionJobConfig {
 	 */
 
 	@Bean
+	public Step yonhapNewsStep() {
+		return new StepBuilder("yonhapArticleStep", jobRepository)
+			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
+			.reader(yonhapArticleRssReader)
+			.processor(articleDedupProcessor)
+			.writer(articleItemWriter)
+			.build();
+	}
+
+	@Bean
 	public Step hankyungNewsStep() {
-		int chunk = 100;
 		return new StepBuilder("hankyungArticleStep", jobRepository)
 			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
 			.reader(hankyungArticleRssReader)
@@ -47,7 +61,6 @@ public class RssArticleCollectionJobConfig {
 
 	@Bean
 	public Step chosunNewsStep() {
-		int chunk = 100;
 		return new StepBuilder("chosunArticleStep", jobRepository)
 			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
 			.reader(chosunArticleRssReader)
@@ -61,6 +74,7 @@ public class RssArticleCollectionJobConfig {
 		return new JobBuilder("rssArticleCollectionJob", jobRepository)
 			.start(hankyungNewsStep())
 			.next(chosunNewsStep())
+			.next(yonhapNewsStep())
 			.build();
 	}
 
