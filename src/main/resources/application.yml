@@ -26,12 +26,21 @@ management:
     defaults:
       enabled: true
 
-naver:
-  api:
-    client-id: ${NAVER_API_CLIENT_ID}
-    client-secret: ${NAVER_API_CLIENT_SECRET}
-    base-url: https://openapi.naver.com/v1/search/news.json
+article:
+  naver:
+    api:
+      client-id: ${NAVER_API_CLIENT_ID}
+      client-secret: ${NAVER_API_CLIENT_SECRET}
+      base-url: https://openapi.naver.com/v1/search/news.json
 
-hankyung:
-  api:
-    base-url: https://www.hankyung.com/feed
+  hankyung:
+    api:
+      base-url: https://www.hankyung.com/feed
+
+  chosun:
+    api:
+      base-url: https://www.chosun.com/arc/outboundfeeds/rss/category
+
+  yonhap:
+    api:
+      base-url: https://www.yonhapnewstv.co.kr/category/news

@@ -11,7 +11,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.processor.ArticleDedupProcessor;
+import com.monew.monew_batch.job.reader.ChosunArticleRssReader;
 import com.monew.monew_batch.job.reader.HankyungArticleRssReader;
+import com.monew.monew_batch.job.reader.YonhapArticleRssReader;
 import com.monew.monew_batch.job.writer.ArticleItemWriter;
 
 import lombok.RequiredArgsConstructor;
@@ -23,17 +25,45 @@ public class RssArticleCollectionJobConfig {
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager platformTransactionManager;
 
+	private final ChosunArticleRssReader chosunArticleRssReader;
 	private final HankyungArticleRssReader hankyungArticleRssReader;
+	private final YonhapArticleRssReader yonhapArticleRssReader;
+
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
 
+	private int chunk = 100;
+
+	/**
+	 * 스프링 배치-> 잡 인스턴스가 중단되면 어떻게되나
+	 * 중단 된후 어떻게 재개할 수 있을까?
+	 */
+
+	@Bean
+	public Step yonhapNewsStep() {
+		return new StepBuilder("yonhapArticleStep", jobRepository)
+			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
+			.reader(yonhapArticleRssReader)
+			.processor(articleDedupProcessor)
+			.writer(articleItemWriter)
+			.build();
+	}
+
 	@Bean
 	public Step hankyungNewsStep() {
-		int chunk = 100;
-
-		return new StepBuilder("hankyungNewsStep", jobRepository)
+		return new StepBuilder("hankyungArticleStep", jobRepository)
 			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
 			.reader(hankyungArticleRssReader)
+			.processor(articleDedupProcessor)
+			.writer(articleItemWriter)
+			.build();
+	}
+
+	@Bean
+	public Step chosunNewsStep() {
+		return new StepBuilder("chosunArticleStep", jobRepository)
+			.<ArticleSaveDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
+			.reader(chosunArticleRssReader)
 			.processor(articleDedupProcessor)
 			.writer(articleItemWriter)
 			.build();
@@ -43,6 +73,8 @@ public class RssArticleCollectionJobConfig {
 	public Job rssArticleCollectionJob() {
 		return new JobBuilder("rssArticleCollectionJob", jobRepository)
 			.start(hankyungNewsStep())
+			.next(chosunNewsStep())
+			.next(yonhapNewsStep())
 			.build();
 	}
 

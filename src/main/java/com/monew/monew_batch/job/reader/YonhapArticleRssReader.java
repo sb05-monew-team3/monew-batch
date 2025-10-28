@@ -8,8 +8,8 @@ import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.stereotype.Component;
 
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
-import com.monew.monew_batch.job.reader.client.HankyungRssClient;
-import com.monew.monew_batch.properties.HankyungArticleProperties;
+import com.monew.monew_batch.job.reader.client.YonhapRssClient;
+import com.monew.monew_batch.properties.YonhapArticleProperties;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HankyungArticleRssReader implements ItemStreamReader<ArticleSaveDto> {
+public class YonhapArticleRssReader implements ItemStreamReader<ArticleSaveDto> {
 
-	private final HankyungRssClient hankyungRssClient;
-	private final HankyungArticleProperties hankyungArticleProperties;
+	private final YonhapRssClient yonhapRssClient;
+	private final YonhapArticleProperties yonhapArticleProperties;
 
 	private int feedIndex;
 	private List<String> feeds;
@@ -29,22 +29,23 @@ public class HankyungArticleRssReader implements ItemStreamReader<ArticleSaveDto
 	@Override
 	public void open(ExecutionContext executionContext) {
 		feedIndex = 0;
-		feeds = hankyungArticleProperties.getFeeds();
+		feeds = yonhapArticleProperties.getFeeds();
 	}
 
 	@Override
-	public ArticleSaveDto read() throws Exception {
+	public ArticleSaveDto read() {
 		if (feedIndex >= feeds.size()) {
-			log.info("[한국경제] 모든 feed 대상 수집 완료");
+			log.info("[연합뉴스] 모든 feed 대상 수집 완료");
 			feedIndex = 0;
 			return null;
 		}
 
 		if (articleBufferIterator == null || !articleBufferIterator.hasNext()) {
-			List<ArticleSaveDto> articleSaveDtos = hankyungRssClient.fetchArticles(feeds.get(feedIndex++));
-			log.info("[한국경제] 키워드 {}를 대상으로 수집 완료, 기사 개수 {}", feeds.get(feedIndex - 1), articleSaveDtos.size());
+			List<ArticleSaveDto> articleSaveDtos = yonhapRssClient.fetchArticles(feeds.get(feedIndex++));
+			log.info("[연합뉴스] 키워드 {}를 대상으로 수집 완료, 기사 개수 {}", feeds.get(feedIndex - 1), articleSaveDtos.size());
 			articleBufferIterator = articleSaveDtos.iterator();
 		}
+
 		return articleBufferIterator.next();
 	}
 }

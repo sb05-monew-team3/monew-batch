@@ -9,8 +9,10 @@ import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConve
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.monew.monew_batch.properties.ChosunArticleProperties;
 import com.monew.monew_batch.properties.HankyungArticleProperties;
 import com.monew.monew_batch.properties.NaverArticleApiProperties;
+import com.monew.monew_batch.properties.YonhapArticleProperties;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,8 @@ public class RestClientConfig {
 
 	private final NaverArticleApiProperties naverArticleApiProperties;
 	private final HankyungArticleProperties hankyungArticleProperties;
+	private final ChosunArticleProperties chosunArticleProperties;
+	private final YonhapArticleProperties yonhapArticleProperties;
 
 	@Bean
 	public RestClient naverRestClient() {
@@ -29,6 +33,29 @@ public class RestClientConfig {
 			.defaultHeader("X-Naver-Client-Secret", naverArticleApiProperties.getClientSecret())
 			.defaultHeader("Accept", "application/json")
 			.defaultHeader("User-Agent", "Mozilla/5.0")
+			.build();
+	}
+
+	@Bean
+	public RestClient yonhapRestClient() {
+		XmlMapper xmlMapper = new XmlMapper();
+
+		MappingJackson2XmlHttpMessageConverter xmlConverter =
+			new MappingJackson2XmlHttpMessageConverter(xmlMapper);
+
+		xmlConverter.setSupportedMediaTypes(Arrays.asList(
+			MediaType.APPLICATION_XML,
+			MediaType.TEXT_XML,
+			new MediaType("application", "rss+xml"),
+			new MediaType("text", "xml")
+		));
+
+		return RestClient.builder()
+			.baseUrl(yonhapArticleProperties.getBaseUrl())
+			.defaultHeader("User-Agent", "Mozilla/5.0")
+			.messageConverters(converters -> {
+				converters.add(0, xmlConverter);
+			})
 			.build();
 	}
 
@@ -48,6 +75,30 @@ public class RestClientConfig {
 
 		return RestClient.builder()
 			.baseUrl(hankyungArticleProperties.getBaseUrl())
+			.defaultHeader("User-Agent", "Mozilla/5.0")
+			.messageConverters(converters -> {
+				converters.add(0, xmlConverter);
+			})
+			.build();
+	}
+
+	@Bean
+	public RestClient chosunRestClient() {
+		XmlMapper xmlMapper = new XmlMapper();
+
+		MappingJackson2XmlHttpMessageConverter xmlConverter =
+			new MappingJackson2XmlHttpMessageConverter(xmlMapper);
+
+		xmlConverter.setSupportedMediaTypes(Arrays.asList(
+			MediaType.APPLICATION_XML,
+			MediaType.TEXT_XML,
+			MediaType.TEXT_HTML,
+			new MediaType("application", "rss+xml"),
+			new MediaType("text", "xml")
+		));
+
+		return RestClient.builder()
+			.baseUrl(chosunArticleProperties.getBaseUrl())
 			.defaultHeader("User-Agent", "Mozilla/5.0")
 			.messageConverters(converters -> {
 				converters.add(0, xmlConverter);

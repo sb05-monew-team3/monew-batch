@@ -6,11 +6,14 @@ import org.mapstruct.Mapping;
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.entity.ArticleSource;
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.reader.dto.ChosunArticleResponse;
 import com.monew.monew_batch.job.reader.dto.HankyungArticleResponse;
 import com.monew.monew_batch.job.reader.dto.NaverArticleResponse;
+import com.monew.monew_batch.job.reader.dto.YonhapArticleResponse;
 import com.monew.monew_batch.util.DataTimeParser;
+import com.monew.monew_batch.util.HtmlParser;
 
-@Mapper(componentModel = "spring", imports = {ArticleSource.class, DataTimeParser.class})
+@Mapper(componentModel = "spring", imports = {ArticleSource.class, DataTimeParser.class, HtmlParser.class})
 public interface ArticleMapper {
 
 	@Mapping(target = "source", expression = "java(ArticleSource.NAVER)")
@@ -26,6 +29,21 @@ public interface ArticleMapper {
 	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.getPubDate()))")
 	@Mapping(target = "summary", constant = "")
 	ArticleSaveDto toArticleSaveDto(HankyungArticleResponse.Item item);
+
+	@Mapping(target = "source", expression = "java(ArticleSource.CHOSUN)")
+	@Mapping(target = "sourceUrl", source = "item.link")
+	@Mapping(target = "title", source = "item.title")
+	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.getPubDate()))")
+	@Mapping(target = "summary", expression = "java(HtmlParser.extractLastParagraph(item.getContentEncoded()))")
+		// @Mapping(target = "summary", source = "item.description")
+	ArticleSaveDto toArticleSaveDto(ChosunArticleResponse.Item item);
+
+	@Mapping(target = "source", expression = "java(ArticleSource.YEONHAP)")
+	@Mapping(target = "sourceUrl", source = "item.link")
+	@Mapping(target = "title", source = "item.title")
+	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.getPubDate()))")
+	@Mapping(target = "summary", source = "item.description")
+	ArticleSaveDto toArticleSaveDto(YonhapArticleResponse.Item item);
 
 	Article toEntity(ArticleSaveDto dto);
 }

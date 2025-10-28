@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "hankyung.api")
+@ConfigurationProperties(prefix = "article.hankyung.api")
 public class HankyungArticleProperties {
 	private final String baseUrl;
-	private final ArticleSource articleSource = ArticleSource.NAVER;
+	private final ArticleSource articleSource = ArticleSource.HANKYUNG;
 	private final List<String> feeds = List.of("economy", "it", "international", "life", "sports", "finance",
 		"realestate", "politics", "society", "opinion", "entertainment");
 }
