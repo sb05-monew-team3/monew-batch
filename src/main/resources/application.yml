@@ -35,3 +35,7 @@ naver:
 hankyung:
   api:
     base-url: https://www.hankyung.com/feed
+
+chosun:
+  api:
+    base-url: https://www.chosun.com/arc/outboundfeeds/rss/category
