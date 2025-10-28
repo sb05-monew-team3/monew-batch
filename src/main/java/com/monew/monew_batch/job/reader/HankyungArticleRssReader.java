@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamReader;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.reader.client.HankyungRssClient;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class HankyungArticleRssReader implements ItemStreamReader<ArticleSaveDto> {
 
