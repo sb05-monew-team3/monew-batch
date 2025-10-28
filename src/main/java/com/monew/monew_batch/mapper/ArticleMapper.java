@@ -9,6 +9,7 @@ import com.monew.monew_batch.job.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.reader.dto.ChosunArticleResponse;
 import com.monew.monew_batch.job.reader.dto.HankyungArticleResponse;
 import com.monew.monew_batch.job.reader.dto.NaverArticleResponse;
+import com.monew.monew_batch.job.reader.dto.YonhapArticleResponse;
 import com.monew.monew_batch.util.DataTimeParser;
 import com.monew.monew_batch.util.HtmlParser;
 
@@ -36,6 +37,13 @@ public interface ArticleMapper {
 	@Mapping(target = "summary", expression = "java(HtmlParser.extractLastParagraph(item.getContentEncoded()))")
 		// @Mapping(target = "summary", source = "item.description")
 	ArticleSaveDto toArticleSaveDto(ChosunArticleResponse.Item item);
+
+	@Mapping(target = "source", expression = "java(ArticleSource.YEONHAP)")
+	@Mapping(target = "sourceUrl", source = "item.link")
+	@Mapping(target = "title", source = "item.title")
+	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.getPubDate()))")
+	@Mapping(target = "summary", source = "item.description")
+	ArticleSaveDto toArticleSaveDto(YonhapArticleResponse.Item item);
 
 	Article toEntity(ArticleSaveDto dto);
 }
