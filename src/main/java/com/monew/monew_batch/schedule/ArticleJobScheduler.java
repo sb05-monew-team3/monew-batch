@@ -30,6 +30,7 @@ public class ArticleJobScheduler {
 	 * 이거 하드 코딩되어있음, 이거 조작하게 할 수 있지 않을까?
 	 * 1. controller api 조정하게 할 수 있고
 	 * 2. spring actuator도 되지 않을까
+	 *  /acutator <- spring admin
 	 * 	- spring admin 를 통해 로그 레벨을 조정할 수 있다.
 	 * 	- 동적으로 yml
 	 */
