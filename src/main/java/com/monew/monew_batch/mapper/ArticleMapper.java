@@ -35,7 +35,6 @@ public interface ArticleMapper {
 	@Mapping(target = "title", source = "item.title")
 	@Mapping(target = "publishDate", expression = "java(DataTimeParser.parseDateToInstant(item.getPubDate()))")
 	@Mapping(target = "summary", expression = "java(HtmlParser.extractLastParagraph(item.getContentEncoded()))")
-		// @Mapping(target = "summary", source = "item.description")
 	ArticleSaveDto toArticleSaveDto(ChosunArticleResponse.Item item);
 
 	@Mapping(target = "source", expression = "java(ArticleSource.YEONHAP)")
@@ -45,5 +44,9 @@ public interface ArticleMapper {
 	@Mapping(target = "summary", source = "item.description")
 	ArticleSaveDto toArticleSaveDto(YonhapArticleResponse.Item item);
 
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "deletedAt", ignore = true)
 	Article toEntity(ArticleSaveDto dto);
 }
