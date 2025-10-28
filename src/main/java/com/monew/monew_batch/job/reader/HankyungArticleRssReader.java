@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public class HankyungArticleRssReader implements ItemStreamReader<ArticleSaveDto
 	private Iterator<ArticleSaveDto> articleBufferIterator;
 
 	@Override
-	public void open(ExecutionContext executionContext) throws ItemStreamException {
+	public void open(ExecutionContext executionContext) {
 		feedIndex = 0;
 		feeds = hankyungArticleProperties.getFeeds();
 	}
@@ -36,13 +35,14 @@ public class HankyungArticleRssReader implements ItemStreamReader<ArticleSaveDto
 	@Override
 	public ArticleSaveDto read() throws Exception {
 		if (feedIndex >= feeds.size()) {
-			log.info("[한국 경제 기사 수집] 모든 feed 대상 수집 완료");
+			log.info("[한국경제] 모든 feed 대상 수집 완료");
 			feedIndex = 0;
 			return null;
 		}
 
 		if (articleBufferIterator == null || !articleBufferIterator.hasNext()) {
 			List<ArticleSaveDto> articleSaveDtos = hankyungRssClient.fetchArticles(feeds.get(feedIndex++));
+			log.info("[한국경제] 키워드 {}를 대상으로 수집 완료, 기사 개수 {}", feeds.get(feedIndex - 1), articleSaveDtos.size());
 			articleBufferIterator = articleSaveDtos.iterator();
 		}
 		return articleBufferIterator.next();

@@ -23,7 +23,7 @@ public class HankyungRssClient {
 
 	public List<ArticleSaveDto> fetchArticles(String feed) {
 		try {
-			log.info("[한국 경제] RSS 피드 요청 시작: feed={}", feed);
+			log.info("[한국경제] RSS 피드 요청 시작: feed={}", feed);
 
 			HankyungArticleResponse response = hankyungRestClient.get()
 				.uri("/" + feed)  // /feed/economy 형태
@@ -31,25 +31,25 @@ public class HankyungRssClient {
 				.body(HankyungArticleResponse.class);
 
 			if (response == null || response.getChannel() == null) {
-				throw new RuntimeException("[한국 경제] RSS 요청 실패 ");
+				throw new RuntimeException("[한국경제] RSS 요청 실패 ");
 			}
 
 			if (response.getChannel().getItems() == null) {
-				log.info("[한국 경제] 기사가 존재하지 않음");
+				log.info("[한국경제] 기사가 존재하지 않음");
 				return null;
 			}
 
 			List<HankyungArticleResponse.Item> items = response.getChannel().getItems();
 
-			log.info("[한국 경제] {}개의 기사", items.size());
+			log.info("[한국경제] {}개의 기사", items.size());
 
 			return items.stream()
 				.map(articleMapper::toArticleSaveDto)
 				.collect(Collectors.toList());
 
 		} catch (Exception e) {
-			log.error("[한국 경제]RSS 피드 호출 실패: feed={}", feed, e);
-			throw new RuntimeException("[한국 경제] RSS 피드 호출 실패: " + e.getMessage(), e);
+			log.error("[한국경제]RSS 피드 호출 실패: feed={}", feed, e);
+			throw new RuntimeException("[한국경제] RSS 피드 호출 실패: " + e.getMessage(), e);
 		}
 	}
 }
