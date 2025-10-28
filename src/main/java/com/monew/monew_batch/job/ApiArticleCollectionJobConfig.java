@@ -28,6 +28,7 @@ public class ApiArticleCollectionJobConfig {
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
 
+	// 이게 뭐지
 	@Bean
 	public ExecutionContextPromotionListener pagePromotionListener() {
 		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();

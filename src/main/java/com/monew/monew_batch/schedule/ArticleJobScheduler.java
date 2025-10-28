@@ -12,8 +12,8 @@ import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @EnableScheduling
@@ -25,6 +25,7 @@ public class ArticleJobScheduler {
 	private final JobExplorer jobExplorer;
 	private final Job apiArticleCollectionJob;
 	private final Job rssArticleCollectionJob;
+	private final Job articleBackUpJob;
 
 	/**
 	 * 이거 하드 코딩되어있음, 이거 조작하게 할 수 있지 않을까?
@@ -34,16 +35,27 @@ public class ArticleJobScheduler {
 	 * 	- spring admin 를 통해 로그 레벨을 조정할 수 있다.
 	 * 	- 동적으로 yml
 	 */
-	@Scheduled(cron = "0 0/3 * * * *")
+
+	// @Scheduled(cron = "0 0/10 * * * *")
+	@PostConstruct
+	public void runArticleToS3Job() throws Exception {
+		System.out.println("[기사 S3 백업] 스케줄러에 의해 실행");
+		JobParameters params = new JobParametersBuilder()
+			.addLong("articleToS3Job.id", System.currentTimeMillis())
+			.toJobParameters();
+		jobLauncher.run(articleBackUpJob, params);
+	}
+
+	// @Scheduled(cron = "0 0/2 * * * *")
 	public void runRssArticleCollectionJob() throws Exception {
-		System.out.println("RSS 기사 배치 시작 스케줄러에 의해 실행");
+		System.out.println("[RSS 기사 배치 시작] 스케줄러에 의해 실행");
 		JobParameters params = new JobParametersBuilder()
 			.addLong("rssArticleJob.id", System.currentTimeMillis())
 			.toJobParameters();
 		jobLauncher.run(rssArticleCollectionJob, params);
 	}
 
-	// @Scheduled(cron = "0 0/3 * * * *")
+	// @Scheduled(cron = "0 0/1 * * * *")
 	public void runApiArticleCollectionJob() throws Exception {
 		System.out.println("[API 네이버 배치 시작] 스케줄러에 의해 실행");
 		apiArticleRunJob();
