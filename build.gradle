@@ -26,7 +26,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.jsoup:jsoup:1.15.3'
 
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -57,6 +56,16 @@ dependencies {
 
     // xml 파싱
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+
+    // s3
+    implementation 'software.amazon.awssdk:s3:2.31.7'
+
+    // html 파싱
+    implementation 'org.jsoup:jsoup:1.15.3'
+
+    // jackson 라이브러리
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {
