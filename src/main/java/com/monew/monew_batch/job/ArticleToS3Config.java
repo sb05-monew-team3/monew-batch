@@ -20,6 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.monew.monew_batch.entity.Article;
+import com.monew.monew_batch.job.listener.ArticleBackupSkipListener;
 import com.monew.monew_batch.repository.ArticleRepository;
 import com.monew.monew_batch.storage.BinaryStorage;
 
@@ -91,6 +92,12 @@ public class ArticleToS3Config {
 			.reader(articleReader())
 			.processor(articleProcessor())
 			.writer(articleWriter())
+			.faultTolerant()
+			.retryLimit(3)
+			.retry(RuntimeException.class)
+			.skipLimit(50)
+			.skip(Exception.class)
+			.listener(new ArticleBackupSkipListener())
 			.build();
 	}
 
