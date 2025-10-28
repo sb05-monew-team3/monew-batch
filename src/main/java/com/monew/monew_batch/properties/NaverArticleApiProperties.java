@@ -7,7 +7,7 @@ import com.monew.monew_batch.entity.ArticleSource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@ConfigurationProperties(prefix = "naver.api")
+@ConfigurationProperties(prefix = "article.naver.api")
 @Getter
 @RequiredArgsConstructor
 public class NaverArticleApiProperties {

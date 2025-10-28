@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "chosun.api")
+@ConfigurationProperties(prefix = "article.chosun.api")
 public class ChosunArticleProperties {
 	private final String baseUrl;
 	private final ArticleSource articleSource = ArticleSource.CHOSUN;
