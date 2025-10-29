@@ -15,7 +15,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @EnableScheduling
 @Configuration
 @RequiredArgsConstructor
@@ -23,9 +25,11 @@ public class ArticleJobScheduler {
 
 	private final JobLauncher jobLauncher;
 	private final JobExplorer jobExplorer;
+
 	private final Job apiArticleCollectionJob;
 	private final Job rssArticleCollectionJob;
 	private final Job articleBackUpJob;
+	private final Job notificationDeleteJob;
 
 	/**
 	 * 이거 하드 코딩되어있음, 이거 조작하게 할 수 있지 않을까?
@@ -36,8 +40,19 @@ public class ArticleJobScheduler {
 	 * 	- 동적으로 yml
 	 */
 
-	// @Scheduled(cron = "0 0/10 * * * *")
+	// @Scheduled(cron = "0 0/1 * * * *")
 	@PostConstruct
+	public void runNotificationDeleteJob() throws Exception {
+		log.info("[알림 삭제] 스케줄러에 의해 실행");
+		JobParameters jobParameters = new JobParametersBuilder()
+			.addLong("notificationDeleteJob", System.currentTimeMillis())
+			.toJobParameters();
+
+		jobLauncher.run(notificationDeleteJob, jobParameters);
+	}
+
+	// @Scheduled(cron = "0 0/10 * * * *")
+	// @PostConstruct
 	public void runArticleToS3Job() throws Exception {
 		System.out.println("[기사 S3 백업] 스케줄러에 의해 실행");
 		JobParameters params = new JobParametersBuilder()
@@ -47,6 +62,7 @@ public class ArticleJobScheduler {
 	}
 
 	// @Scheduled(cron = "0 0/2 * * * *")
+	// @PostConstruct
 	public void runRssArticleCollectionJob() throws Exception {
 		System.out.println("[RSS 기사 배치 시작] 스케줄러에 의해 실행");
 		JobParameters params = new JobParametersBuilder()
