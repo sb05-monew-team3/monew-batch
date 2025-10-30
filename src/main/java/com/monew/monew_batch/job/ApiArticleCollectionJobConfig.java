@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.listener.JobProcessedCountListener;
 import com.monew.monew_batch.job.processor.ArticleDedupProcessor;
 import com.monew.monew_batch.job.reader.NaverArticleApiReader;
 import com.monew.monew_batch.job.writer.ArticleItemWriter;
@@ -27,6 +28,8 @@ public class ApiArticleCollectionJobConfig {
 	private final NaverArticleApiReader naverArticleApiReader;
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
+
+	private final JobProcessedCountListener jobProcessedCountListener;
 
 	// 이게 뭐지
 	@Bean
@@ -52,7 +55,8 @@ public class ApiArticleCollectionJobConfig {
 
 	@Bean
 	public Job apiArticleCollectionJob() {
-		return new JobBuilder("apiArticleCollectionJob", jobRepository)
+		return new JobBuilder(JobName.API_ARTICLE_COLLECTION_JOB.getName(), jobRepository)
+			.listener(jobProcessedCountListener)
 			.start(naverNewsStep())
 			.build();
 	}
