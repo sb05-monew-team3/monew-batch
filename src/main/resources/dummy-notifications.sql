@@ -1,13 +1,11 @@
 BEGIN;
 
--- First, ensure the user exists (insert if not present)
 INSERT INTO users (id, created_at, updated_at, nickname, email, password)
 VALUES ('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', NOW(), NOW(), 'nickname', 'em', 'pwd')
 ON CONFLICT (id) DO UPDATE SET updated_at = NOW();
 
 TRUNCATE TABLE notifications RESTART IDENTITY;
 
--- Finally, insert notifications
 INSERT INTO notifications (id, confirmed, user_id, content, resource_type, resource_id, created_at, updated_at)
 VALUES ('00000000-aaaa-bbbb-cccc-000000000001', true, 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', '1일 전 알림입니다.', 'interest',
         'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),

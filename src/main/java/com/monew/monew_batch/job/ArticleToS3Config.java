@@ -9,7 +9,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.job.listener.ArticleBackupSkipListener;
+import com.monew.monew_batch.job.listener.JobProcessedCountListener;
+import com.monew.monew_batch.job.writer.ArticleToS3Writer;
 import com.monew.monew_batch.repository.ArticleRepository;
 import com.monew.monew_batch.storage.BinaryStorage;
 
@@ -36,7 +35,9 @@ public class ArticleToS3Config {
 	private final PlatformTransactionManager platformTransactionManager;
 	private final ArticleRepository articleRepository;
 	private final BinaryStorage binaryStorage;
-	private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+	private final JobProcessedCountListener jobProcessedCountListener;
+	private final ArticleToS3Writer articleWriter;
 
 	@Bean
 	@StepScope
@@ -67,31 +68,12 @@ public class ArticleToS3Config {
 	}
 
 	@Bean
-	@StepScope
-	public ItemWriter<Article> articleWriter() {
-		return items -> {
-			for (Article article : items) {
-				try {
-					byte[] articleByte = objectMapper.writeValueAsBytes(article);
-
-					binaryStorage.put(article.getId(), article.getPublishDate(), articleByte);
-					log.debug("[기사 백업] 저장 완료: id={}", article.getId());
-				} catch (Exception e) {
-					log.error("[기사 백업] 저장 완료: id={}, error={}", article.getId(), e.getMessage());
-					throw new RuntimeException("[기사 백업] 실패", e);
-				}
-			}
-			log.info("[기사 백업] {}건 저장 완료", items.size());
-		};
-	}
-
-	@Bean
 	public Step articleBackupStep() {
 		return new StepBuilder("articleBackupStep", jobRepository)
 			.<Article, Article>chunk(100, platformTransactionManager)
 			.reader(articleReader())
 			.processor(articleProcessor())
-			.writer(articleWriter())
+			.writer(articleWriter)
 			.faultTolerant()
 			.retryLimit(3)
 			.retry(RuntimeException.class)
@@ -103,7 +85,8 @@ public class ArticleToS3Config {
 
 	@Bean
 	public Job articleBackUpJob() {
-		return new JobBuilder("articleBackupJob", jobRepository)
+		return new JobBuilder(JobName.ARTICLE_BACKUP_TO_S3_JOB.getName(), jobRepository)
+			.listener(jobProcessedCountListener)
 			.start(articleBackupStep())
 			.build();
 	}

@@ -3,6 +3,8 @@ package com.monew.monew_batch.job.writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,13 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 	private final ArticleRepository articleRepository;
 	private final ArticleMapper articleMapper;
 
+	private StepExecution stepExecution;
+
+	@BeforeStep
+	public void beforeStep(StepExecution stepExecution) {
+		this.stepExecution = stepExecution;
+	}
+
 	@Override
 	public void write(Chunk<? extends ArticleSaveDto> items) throws Exception {
 		if (items == null || items.isEmpty()) {
@@ -34,6 +43,18 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 			articles.add(entity);
 		}
 
+		updateProcessedCount(articles.size());
+
 		articleRepository.saveAll(articles);
+	}
+
+	private void updateProcessedCount(int count) {
+		if (stepExecution == null) {
+			return;
+		}
+
+		long processedCount = stepExecution.getExecutionContext().getLong("processedCount", 0L);
+		stepExecution.getExecutionContext().putLong("processedCount", processedCount + count);
+
 	}
 }
