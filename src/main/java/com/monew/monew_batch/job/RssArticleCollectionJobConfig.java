@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.listener.JobProcessedCountListener;
 import com.monew.monew_batch.job.processor.ArticleDedupProcessor;
 import com.monew.monew_batch.job.reader.ChosunArticleRssReader;
 import com.monew.monew_batch.job.reader.HankyungArticleRssReader;
@@ -32,6 +33,7 @@ public class RssArticleCollectionJobConfig {
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
 
+	private final JobProcessedCountListener jobProcessedCountListener;
 	private int chunk = 100;
 
 	/**
@@ -71,7 +73,8 @@ public class RssArticleCollectionJobConfig {
 
 	@Bean
 	public Job rssArticleCollectionJob() {
-		return new JobBuilder("rssArticleCollectionJob", jobRepository)
+		return new JobBuilder(JobName.RSS_ARTICLE_COLLECTION_JOB.getName(), jobRepository)
+			.listener(jobProcessedCountListener)
 			.start(hankyungNewsStep())
 			.next(chosunNewsStep())
 			.next(yonhapNewsStep())
