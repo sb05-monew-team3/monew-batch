@@ -50,3 +50,9 @@ management:
   health:
     defaults:
       enabled: true
+  metrics:
+    export:
+      simple:
+        step: 10s
+    tags:
+      application: ${spring.application.name}

@@ -1,5 +1,4 @@
 spring:
-
   boot:
     admin:
       client:
@@ -9,6 +8,7 @@ spring:
           name: monew_batch
           service-url: http://localhost:8082
           management-base-url: http://localhost:8082
+      period: 1s
   batch:
     job:
       enabled: false
