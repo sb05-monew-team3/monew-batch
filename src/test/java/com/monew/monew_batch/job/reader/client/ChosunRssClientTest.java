@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.monew.monew_batch.job.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.common.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.rss_article_collection.client.ChosunRssClient;
 
 @SpringBootTest
 public class ChosunRssClientTest {

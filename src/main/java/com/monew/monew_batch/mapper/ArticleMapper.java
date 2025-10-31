@@ -5,11 +5,11 @@ import org.mapstruct.Mapping;
 
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.entity.ArticleSource;
-import com.monew.monew_batch.job.dto.ArticleSaveDto;
-import com.monew.monew_batch.job.reader.dto.ChosunArticleResponse;
-import com.monew.monew_batch.job.reader.dto.HankyungArticleResponse;
-import com.monew.monew_batch.job.reader.dto.NaverArticleResponse;
-import com.monew.monew_batch.job.reader.dto.YonhapArticleResponse;
+import com.monew.monew_batch.job.api_article_collection.dto.NaverArticleResponse;
+import com.monew.monew_batch.job.common.dto.ArticleSaveDto;
+import com.monew.monew_batch.job.rss_article_collection.dto.ChosunArticleResponse;
+import com.monew.monew_batch.job.rss_article_collection.dto.HankyungArticleResponse;
+import com.monew.monew_batch.job.rss_article_collection.dto.YonhapArticleResponse;
 import com.monew.monew_batch.util.DataTimeParser;
 import com.monew.monew_batch.util.HtmlParser;
 

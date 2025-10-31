@@ -48,6 +48,10 @@ public class S3BinaryStorage implements BinaryStorage {
 			.key(key));
 	}
 
+	/**
+	 * 단일 건으로 조회하는건 성능상에 문제가 있음
+	 * 벌크식으로 검사하는 방식이 있지 않을까?
+	 */
 	@Override
 	public Boolean exists(UUID id, Instant date) {
 		String formattedDate = getDateFromInstant(date);
