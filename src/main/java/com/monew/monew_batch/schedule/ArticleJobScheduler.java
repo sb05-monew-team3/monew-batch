@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.monew.monew_batch.job.JobName;
-import com.monew.monew_batch.job.monitor.BatchMetricsUtil;
+import com.monew.monew_batch.job.common.monitor.BatchMetricsUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
