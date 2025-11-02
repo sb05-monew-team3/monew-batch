@@ -1,16 +1,15 @@
 package com.monew.monew_batch.job.api_article_collection.reader;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.scope.context.StepSynchronizationManager;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.stereotype.Component;
 
 import com.monew.monew_batch.job.api_article_collection.client.NaverApiClient;
+import com.monew.monew_batch.job.api_article_collection.dto.NaverArticleProcessorDto;
 import com.monew.monew_batch.job.common.dto.ArticleSaveDto;
 import com.monew.monew_batch.repository.InterestKeywordRepository;
 
@@ -20,93 +19,122 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NaverArticleApiReader implements ItemStreamReader<ArticleSaveDto> {
+public class NaverArticleApiReader implements ItemStreamReader<NaverArticleProcessorDto> {
 
 	private final NaverApiClient naverApiClient;
 	private final InterestKeywordRepository interestKeywordRepository;
 
 	private static final String SORT = "sim";
-	private static final int DISPLAY = 100;
-	private static final int MAX_START = 1000;
-	private static final String CURRENT_PAGE_KEY = "currentPage";
+	private static final int DISPLAY = 100;     // 네이버 최대 100
+	private static final int MAX_START = 1000;  // 네이버 최대 start
+	private static final String EC_KEYWORD_INDEX = "naver.keywordIndex";
+	private static final String EC_CURRENT_START = "naver.currentStart";
 
 	private List<String> keywords;
-	private Iterator<ArticleSaveDto> articleBufferIterator;
-	private int currentPage = 1;     //
-	private int keywordIndex = 0;    // 현재 키워드 위치(에러 시 처음부터 재시작 )
-	private int start;
+	private Iterator<NaverArticleProcessorDto> articleBufferIterator;
+
+	private int keywordIndex = 0;
+	private int currentStart = 1;
 
 	@Override
 	public void open(ExecutionContext executionContext) {
 		if (keywords == null) {
 			keywords = interestKeywordRepository.findDistinctNames();
-			if (keywords == null || keywords.isEmpty()) {
-				log.info("[네이버 기사 주기 작업] 키워드 없음");
+			if (keywords.isEmpty()) {
+				log.info("[네이버 기사 수집] 키워드 없음");
 				return;
 			}
-			log.info("[네이버 기사 주기 작업] 키워드 로드: {}", keywords);
+			log.info("[네이버 기사 수집] 키워드 로드: {}", keywords);
 		}
 
-		JobParameters params = Objects.requireNonNull(StepSynchronizationManager.getContext())
-			.getStepExecution()
-			.getJobParameters();
-		Long page = params.getLong("page");
-		if (page != null && page > 0) {
-			currentPage = page.intValue();
-			log.info("[네이버 기사 주기 작업] JobParameters.page 적용: {}", currentPage);
+		if (executionContext != null) {
+			if (executionContext.containsKey(EC_KEYWORD_INDEX)) {
+				keywordIndex = executionContext.getInt(EC_KEYWORD_INDEX);
+			}
+			if (executionContext.containsKey(EC_CURRENT_START)) {
+				currentStart = executionContext.getInt(EC_CURRENT_START);
+			}
 		}
 
-		start = (currentPage - 1) * DISPLAY + 1;
-		if (start > MAX_START) {
-			log.info("[네이버 기사 주기 작업] 상한 도달로 page 리셋 : {} -> 1", currentPage);
-			currentPage = 1;
-			executionContext.putInt(CURRENT_PAGE_KEY, 1);
-		}
-
-		log.info("[네이버 기사 주기 작업] open(): currentPage={}", currentPage);
+		keywordIndex = Math.min(Math.max(keywordIndex, 0), keywords.size());
+		if (currentStart < 1 || currentStart > MAX_START)
+			currentStart = 1;
 	}
 
 	@Override
-	public ArticleSaveDto read() {
+	public NaverArticleProcessorDto read() {
+		if (articleBufferIterator != null && articleBufferIterator.hasNext()) {
+			return articleBufferIterator.next();
+		}
 
-		while (articleBufferIterator == null || !articleBufferIterator.hasNext()) {
-			// 현재 page에 대해 모든 키워드 처리 완료 : page 올리고 저장 후 종료 -> 다음 페이지로 넘어가야함
-			if (keywordIndex >= keywords.size()) {
-				int nextPage = currentPage + 1;
+		if (keywords == null || keywordIndex >= keywords.size()) {
+			return null;
+		}
 
-				ExecutionContext ec = Objects.requireNonNull(StepSynchronizationManager
-						.getContext())
-					.getStepExecution()
-					.getExecutionContext();
-				ec.putInt(CURRENT_PAGE_KEY, nextPage);
-				currentPage = nextPage;
-				articleBufferIterator = null; // 버퍼 초기화
-				keywordIndex = 0; // 키워드 초기화
+		while (keywordIndex < keywords.size()) {
+			String keyword = keywords.get(keywordIndex);
 
-				log.info("[네이버 기사 주기 작업] page={} 완료 : page={}로 증가, 종료", nextPage - 1, nextPage);
-				return null;
+			if (currentStart > MAX_START) {
+				moveToNextKeyword();
+				continue;
 			}
 
-			String keyword = keywords.get(keywordIndex++);
-			log.info("[네이버 기사 주기 작업] '{}' 수집 시작: page={}, start={}, display={}, sort={}", keyword, currentPage, start,
-				DISPLAY, SORT);
+			List<ArticleSaveDto> articles;
+			articles = naverApiClient.fetchArticles(keyword, DISPLAY, currentStart, SORT);
 
-			try {
-				List<ArticleSaveDto> articles = naverApiClient.fetchArticles(keyword, DISPLAY, start, SORT); // 기사 가져오기
+			int requested = DISPLAY;
+			int received = (articles == null) ? 0 : articles.size();
+			log.info("[네이버 기사 수집] '{}' start={} 요청={}건 응답={}건", keyword, currentStart, requested, received);
 
-				if (articles == null || articles.isEmpty()) {
-					log.info("[네이버 기사 주기 작업] '{}' 결과 없음 (page={}, start={})", keyword, currentPage, start);
+			currentStart += DISPLAY;
+
+			if (received == 0) {
+				moveToNextKeyword();
+				continue;
+			}
+
+			List<NaverArticleProcessorDto> buffer = new ArrayList<>(received);
+			for (ArticleSaveDto a : articles) {
+				if (a == null)
 					continue;
-				}
+				buffer.add(new NaverArticleProcessorDto(keyword, a));
+			}
+			if (buffer.isEmpty()) {
+				moveToNextKeyword();
+				continue;
+			}
 
-				articleBufferIterator = articles.iterator();
-			} catch (Exception e) {
-				log.error("[네이버 기사 주기 작업] '{}' (page={}, start={}) 수집 오류: {}", keyword, currentPage, start,
-					e.getMessage(), e);
-				throw new RuntimeException("네이버 API 호출 실패(재시작 시 page 유지, 키워드는 처음부터)", e);
+			if (received < DISPLAY || currentStart > MAX_START) {
+			}
+
+			articleBufferIterator = buffer.iterator();
+			if (articleBufferIterator.hasNext()) {
+				return articleBufferIterator.next();
 			}
 		}
 
-		return articleBufferIterator.next();
+		return null;
+	}
+
+	@Override
+	public void update(ExecutionContext executionContext) {
+		if (executionContext == null)
+			return;
+		executionContext.putInt(EC_KEYWORD_INDEX, keywordIndex);
+		executionContext.putInt(EC_CURRENT_START, currentStart);
+	}
+
+	@Override
+	public void close() {
+		keywords = null;
+		articleBufferIterator = null;
+		keywordIndex = 0;
+		currentStart = 1;
+	}
+
+	private void moveToNextKeyword() {
+		keywordIndex++;
+		currentStart = 1; // 다음 키워드는 처음부터
+		articleBufferIterator = null;
 	}
 }
