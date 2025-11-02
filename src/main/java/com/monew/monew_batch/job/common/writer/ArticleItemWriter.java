@@ -55,6 +55,5 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 
 		long processedCount = stepExecution.getExecutionContext().getLong("processedCount", 0L);
 		stepExecution.getExecutionContext().putLong("processedCount", processedCount + count);
-
 	}
 }
