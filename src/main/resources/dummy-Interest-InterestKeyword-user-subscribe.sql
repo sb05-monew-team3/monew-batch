@@ -9,10 +9,13 @@ TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 -- users 더미 데이터 (created_at = NOW() - 2일, deleted_at = NOW() - 1일)
 INSERT INTO users (id, email, nickname, password, deleted_at, created_at)
 VALUES
-    ('aaaaaaaa-1111-1111-1111-111111111111', 'user1@example.com', '사용자1', '$2a$10$dummyhashedpassword1', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
-    ('aaaaaaaa-2222-2222-2222-222222222222', 'user2@example.com', '사용자2', '$2a$10$dummyhashedpassword2', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
-    ('aaaaaaaa-3333-3333-3333-333333333333', 'user3@example.com', '사용자3', '$2a$10$dummyhashedpassword3', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
-    ('aaaaaaaa-4444-4444-4444-444444444444', 'user4@example.com', '사용자4', '$2a$10$dummyhashedpassword4', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day');
+    ('aaaaaaaa-1111-1111-1111-111111111111', 'user1@example.com', '사용자1', '$2a$10$dummyhashedpassword1', null, NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-2222-2222-2222-222222222222', 'user2@example.com', '사용자2', '$2a$10$dummyhashedpassword2', null, NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-3333-3333-3333-333333333333', 'user3@example.com', '사용자3', '$2a$10$dummyhashedpassword3', null, NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-4444-4444-4444-444444444444', 'user4@example.com', '사용자4', '$2a$10$dummyhashedpassword4', null, NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-5555-5555-5555-555555555555', 'delete1@example.com', '사용자삭제1', '$2a$10$dummyhashedpassword3', date_trunc('day', NOW()) - INTERVAL '1 day', NOW() - INTERVAL '4 day'),
+    ('aaaaaaaa-6666-6666-6666-666666666666', 'delete2@example.com', '사용자삭제2', '$2a$10$dummyhashedpassword4', date_trunc('day', NOW()) - INTERVAL '1 day', NOW() - INTERVAL '5 day')
+;
 
 
 -- interests (고정 UUID)
