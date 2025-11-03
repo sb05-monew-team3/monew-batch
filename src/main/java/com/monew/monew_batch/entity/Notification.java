@@ -2,6 +2,9 @@ package com.monew.monew_batch.entity;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.monew.monew_batch.entity.common.BaseUpdatableEntity;
 
@@ -27,6 +30,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@Builder
 @ToString(callSuper = true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,6 +50,7 @@ public class Notification extends BaseUpdatableEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 50)
+	@JdbcType(PostgreSQLEnumJdbcType.class)
 	private NotificationResourceType resourceType;
 
 	@Column(nullable = false)

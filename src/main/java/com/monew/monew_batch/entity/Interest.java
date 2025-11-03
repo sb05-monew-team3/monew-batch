@@ -1,11 +1,17 @@
 package com.monew.monew_batch.entity;
 
+import java.util.List;
+
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.monew.monew_batch.entity.common.BaseUpdatableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +33,15 @@ public class Interest extends BaseUpdatableEntity {
 
 	@Column(nullable = false, length = 50)
 	private String name;
+
+	@OneToMany(mappedBy = "interest")
+	@BatchSize(size = 100)
+	private List<Subscription> subscriptions;
+
+	@OneToMany(mappedBy = "interest")
+	@BatchSize(size = 100)
+	private List<InterestKeyword> interestKeywords;
+
+	@Transient
+	private int articleCount;
 }

@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.common.writer;
+package com.monew.monew_batch.job.api_article_collection.writer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,12 @@ import com.monew.monew_batch.mapper.ArticleMapper;
 import com.monew.monew_batch.repository.ArticleRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
+public class NaverArticleApiWriter implements ItemWriter<ArticleSaveDto> {
 
 	private final ArticleRepository articleRepository;
 	private final ArticleMapper articleMapper;
@@ -31,13 +33,12 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 	}
 
 	@Override
-	public void write(Chunk<? extends ArticleSaveDto> items) throws Exception {
+	public void write(Chunk<? extends ArticleSaveDto> items) {
 		if (items == null || items.isEmpty()) {
 			return;
 		}
 
 		List<Article> articles = new ArrayList<>();
-
 		for (ArticleSaveDto item : items) {
 			Article entity = articleMapper.toEntity(item);
 			articles.add(entity);
@@ -56,4 +57,5 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 		long processedCount = stepExecution.getExecutionContext().getLong("processedCount", 0L);
 		stepExecution.getExecutionContext().putLong("processedCount", processedCount + count);
 	}
+
 }
