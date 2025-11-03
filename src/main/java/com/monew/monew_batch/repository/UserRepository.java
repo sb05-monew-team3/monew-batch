@@ -13,7 +13,6 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
 	@Modifying
-	@Transactional
 	@Query(value = "DELETE FROM users WHERE deleted_at IS NOT NULL", nativeQuery = true)
 	int deleteUsersMarkedAsDeleted();
 }
