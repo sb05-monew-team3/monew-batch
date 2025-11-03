@@ -1,20 +1,19 @@
 package com.monew.monew_batch.repository;
 
-import java.time.Instant;
-import java.util.List;
+import com.monew.monew_batch.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import com.monew.monew_batch.entity.User;
-
+@Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-	@Query("SELECT u "
-		+ "FROM User u "
-		+ "WHERE u.deletedAt IS NOT NULL "
-		+ "AND u.deletedAt < :threshold")
-	List<User> findDeletedUsers(@Param("threshold") Instant threshold);
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM users WHERE deleted_at IS NOT NULL", nativeQuery = true)
+	int deleteUsersMarkedAsDeleted();
 }
