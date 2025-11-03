@@ -6,16 +6,14 @@ TRUNCATE TABLE subscriptions RESTART IDENTITY CASCADE;
 TRUNCATE TABLE interests RESTART IDENTITY CASCADE;
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 
--- users 더미 데이터
+-- users 더미 데이터 (created_at = NOW() - 2일, deleted_at = NOW() - 1일)
 INSERT INTO users (id, email, nickname, password, deleted_at, created_at)
-VALUES ('aaaaaaaa-1111-1111-1111-111111111111', 'user1@example.com', '사용자1', '$2a$10$dummyhashedpassword1', NULL,
-        NOW()),
-       ('aaaaaaaa-2222-2222-2222-222222222222', 'user2@example.com', '사용자2', '$2a$10$dummyhashedpassword2', NULL,
-        NOW()),
-       ('aaaaaaaa-3333-3333-3333-333333333333', 'user3@example.com', '사용자3', '$2a$10$dummyhashedpassword3', NULL,
-        NOW()),
-       ('aaaaaaaa-4444-4444-4444-444444444444', 'user4@example.com', '사용자4', '$2a$10$dummyhashedpassword4', NULL,
-        NOW());
+VALUES
+    ('aaaaaaaa-1111-1111-1111-111111111111', 'user1@example.com', '사용자1', '$2a$10$dummyhashedpassword1', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-2222-2222-2222-222222222222', 'user2@example.com', '사용자2', '$2a$10$dummyhashedpassword2', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-3333-3333-3333-333333333333', 'user3@example.com', '사용자3', '$2a$10$dummyhashedpassword3', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day'),
+    ('aaaaaaaa-4444-4444-4444-444444444444', 'user4@example.com', '사용자4', '$2a$10$dummyhashedpassword4', NOW() - INTERVAL '1 day', NOW() - INTERVAL '2 day');
+
 
 -- interests (고정 UUID)
 INSERT INTO interests (id, name, created_at)
@@ -72,7 +70,7 @@ VALUES
      '22222222-aaaa-bbbb-cccc-222222222222', NOW()),
 
     -- AI 구독자 4명
-    ('bbbbbbbb-0000-0000-0000-000000000006', 'aaaaaaaa-1111-1111-1111-111111111111', e
+    ('bbbbbbbb-0000-0000-0000-000000000006', 'aaaaaaaa-1111-1111-1111-111111111111',
         '33333333-aaaa-bbbb-cccc-333333333333', NOW()),
     ('bbbbbbbb-0000-0000-0000-000000000007', 'aaaaaaaa-2222-2222-2222-222222222222',
      '33333333-aaaa-bbbb-cccc-333333333333', NOW()),
