@@ -14,9 +14,6 @@ public class UserCleanupScheduler {
 
 	private final UserRepository userRepository;
 
-	/**
-	 * 1분마다 deleted_at이 채워진 사용자들을 삭제
-	 */
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *")
 	public void cleanupDeletedUsers() {
