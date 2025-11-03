@@ -18,12 +18,12 @@ public class UserCleanupScheduler {
 	 * 1분마다 deleted_at이 채워진 사용자들을 삭제
 	 */
 	@Transactional
-	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0 0 * * *")
 	public void cleanupDeletedUsers() {
 		log.info("[UserCleanupScheduler] 삭제 스케줄러 실행 시작");
 
 		try {
-			int count = userRepository.deleteUsersMarkedAsDeleted();
+			long count = userRepository.deleteUsersMarkedAsDeleted();
 			log.info("[UserCleanupScheduler] 삭제된 사용자 수: {}", count);
 		} catch (Exception e) {
 			log.error("[UserCleanupScheduler] 삭제 중 오류 발생: {}", e.getMessage(), e);
