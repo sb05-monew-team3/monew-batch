@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @Slf4j
 @Component
@@ -29,9 +28,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	private static final String PATH = "article/";
 
 	@Override
-	public UUID put(UUID id, Instant date, byte[] data) {
+	public UUID put(UUID id, Instant date, String keyword, byte[] data) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + formattedDate + "/" + id;
+		String key = PATH + keyword + "/" + formattedDate + "/" + id;
 
 		s3.putObject(b -> b.bucket(config.getBucket())
 			.key(key), RequestBody.fromBytes(data));
@@ -40,9 +39,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	}
 
 	@Override
-	public InputStream get(UUID id, Instant date) {
+	public InputStream get(UUID id, String keyword, Instant date) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + formattedDate + "/" + id;
+		String key = PATH + keyword + "/" + formattedDate + "/" + id;
 
 		return s3.getObject(b -> b.bucket(config.getBucket())
 			.key(key));
@@ -53,9 +52,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	 * 벌크식으로 검사하는 방식이 있지 않을까?
 	 */
 	@Override
-	public Boolean exists(UUID id, Instant date) {
+	public Boolean exists(UUID id, String keyword, Instant date) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + formattedDate + "/" + id;
+		String key = PATH + keyword + "/" + formattedDate + "/" + id;
 
 		try {
 			HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
@@ -65,8 +64,6 @@ public class S3BinaryStorage implements BinaryStorage {
 
 			s3.headObject(headObjectRequest);
 			return true;
-		} catch (NoSuchKeyException e) {
-			return false;
 		} catch (Exception e) {
 			return false;
 		}

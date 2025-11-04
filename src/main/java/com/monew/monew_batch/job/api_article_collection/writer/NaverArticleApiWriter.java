@@ -12,6 +12,8 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.entity.ArticleInterest;
 import com.monew.monew_batch.entity.Interest;
@@ -21,7 +23,7 @@ import com.monew.monew_batch.mapper.ArticleMapper;
 import com.monew.monew_batch.repository.ArticleInterestRepository;
 import com.monew.monew_batch.repository.ArticleRepository;
 import com.monew.monew_batch.repository.InterestKeywordRepository;
-import com.monew.monew_batch.repository.InterestRepository;
+import com.monew.monew_batch.storage.BinaryStorage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 public class NaverArticleApiWriter implements ItemWriter<NaverArticleProcessorDto> {
 
 	private final ArticleInterestRepository articleInterestRepository;
-	private final InterestRepository interestRepository;
 	private final ArticleRepository articleRepository;
 	private final ArticleMapper articleMapper;
 	private final InterestKeywordRepository interestKeywordRepository;
+	private final BinaryStorage binaryStorage;
+	private final ObjectMapper objectMapper;
 
 	private StepExecution stepExecution;
 
@@ -46,7 +49,8 @@ public class NaverArticleApiWriter implements ItemWriter<NaverArticleProcessorDt
 
 	@Override
 	@Transactional
-	public void write(Chunk<? extends NaverArticleProcessorDto> naverArticleProcessorDtos) {
+	public void write(Chunk<? extends NaverArticleProcessorDto> naverArticleProcessorDtos) throws
+		JsonProcessingException {
 		if (naverArticleProcessorDtos == null || naverArticleProcessorDtos.isEmpty()) {
 			return;
 		}
@@ -54,6 +58,7 @@ public class NaverArticleApiWriter implements ItemWriter<NaverArticleProcessorDt
 		for (NaverArticleProcessorDto naverArticleProcessorDto : naverArticleProcessorDtos) {
 			Article entity = articleMapper.toEntity(naverArticleProcessorDto.getArticleSaveDto());
 			Article savedArticle = articleRepository.save(entity);
+			// backUp(savedArticle, naverArticleProcessorDto.getKeyword());
 
 			log.info("Article 저장 완료: id={}, title={}", savedArticle.getId(), savedArticle.getTitle());
 
@@ -97,6 +102,16 @@ public class NaverArticleApiWriter implements ItemWriter<NaverArticleProcessorDt
 
 		long processedCount = stepExecution.getExecutionContext().getLong("processedCount", 0L);
 		stepExecution.getExecutionContext().putLong("processedCount", processedCount + count);
+	}
+
+	private void backUp(Article article, String keyword) throws JsonProcessingException {
+
+		if (binaryStorage.exists(article.getId(), keyword, article.getPublishDate())) {
+			return;
+		}
+
+		byte[] bytes = objectMapper.writeValueAsBytes(article);
+		binaryStorage.put(article.getId(), article.getPublishDate(), keyword, bytes);
 	}
 
 }

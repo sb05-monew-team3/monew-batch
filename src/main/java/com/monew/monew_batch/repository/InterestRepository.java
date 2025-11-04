@@ -1,5 +1,6 @@
 package com.monew.monew_batch.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,4 +19,12 @@ public interface InterestRepository extends JpaRepository<Interest, UUID> {
 	@EntityGraph(attributePaths = {"subscriptions", "subscriptions.user"})
 	@Query("select i from Interest i where i.id = :id")
 	Optional<Interest> findByIdWithSubscriptions(@Param("id") UUID id);
+
+	@Query("""
+				SELECT i
+				FROM Interest i
+				JOIN ArticleInterest ai ON ai.interest.id = i.id
+				WHERE ai.article.id = :articleId
+		""")
+	List<Interest> findByArticleId(@Param("articleId") UUID articleId);
 }

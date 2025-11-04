@@ -13,6 +13,8 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.entity.ArticleInterest;
 import com.monew.monew_batch.entity.Interest;
@@ -22,7 +24,7 @@ import com.monew.monew_batch.mapper.ArticleMapper;
 import com.monew.monew_batch.repository.ArticleInterestRepository;
 import com.monew.monew_batch.repository.ArticleRepository;
 import com.monew.monew_batch.repository.InterestKeywordRepository;
-import com.monew.monew_batch.repository.InterestRepository;
+import com.monew.monew_batch.storage.BinaryStorage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +37,10 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 	private final ArticleRepository articleRepository;
 	private final ArticleMapper articleMapper;
 	private final ArticleInterestRepository articleInterestRepository;
-	private final InterestRepository interestRepository;
 	private final InterestKeywordRepository interestKeywordRepository;
+
+	private final BinaryStorage binaryStorage;
+	private final ObjectMapper objectMapper;
 
 	private StepExecution stepExecution;
 
@@ -47,7 +51,7 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 
 	@Override
 	@Transactional
-	public void write(Chunk<? extends ArticleSaveDto> items) {
+	public void write(Chunk<? extends ArticleSaveDto> items) throws JsonProcessingException {
 		int savedCount = 0;
 
 		if (items == null || items.isEmpty()) {
@@ -63,10 +67,11 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 			Article entity = articleMapper.toEntity(item);
 
 			Set<Interest> matchedInterests = new HashSet<>();
+			Set<String> matchedKeywords = new HashSet<>();
 
 			for (String keyword : keywords) {
-				if (entity.getTitle().contains(keyword) ||
-					(entity.getSummary() != null && entity.getSummary().contains(keyword))) {
+				if (entity.getTitle().contains(keyword)) {
+					matchedKeywords.add(keyword);
 
 					int currentCount = jobContext.containsKey(keyword) ? jobContext.getInt(keyword) : 0;
 					jobContext.putInt(keyword, currentCount + 1);
@@ -87,6 +92,10 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 			Article savedArticle = articleRepository.save(entity);
 			savedCount++;
 			log.info("Article 저장 완료: id={}, title={}", savedArticle.getId(), savedArticle.getTitle());
+
+			// for (String keyword : matchedKeywords) {
+			// 	backUp(savedArticle, keyword);
+			// }
 
 			for (Interest interest : matchedInterests) {
 				ArticleInterest articleInterest = ArticleInterest.builder()
@@ -114,5 +123,15 @@ public class ArticleItemWriter implements ItemWriter<ArticleSaveDto> {
 
 		long processedCount = stepExecution.getExecutionContext().getLong("processedCount", 0L);
 		stepExecution.getExecutionContext().putLong("processedCount", processedCount + count);
+	}
+
+	private void backUp(Article article, String keyword) throws JsonProcessingException {
+
+		if (binaryStorage.exists(article.getId(), keyword, article.getPublishDate())) {
+			return;
+		}
+
+		byte[] bytes = objectMapper.writeValueAsBytes(article);
+		binaryStorage.put(article.getId(), article.getPublishDate(), keyword, bytes);
 	}
 }
