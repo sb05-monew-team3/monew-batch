@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.common.writer;
+package com.monew.monew_batch.job.backup.writer;
 
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
