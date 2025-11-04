@@ -12,13 +12,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.monew.monew_batch.entity.Interest;
 import com.monew.monew_batch.job.JobName;
 import com.monew.monew_batch.job.api_article_collection.dto.NaverArticleProcessorDto;
-import com.monew.monew_batch.job.api_article_collection.processor.InterestProcessor;
 import com.monew.monew_batch.job.api_article_collection.processor.NaverArticleApiProcessor;
-import com.monew.monew_batch.job.api_article_collection.reader.InterestReader;
 import com.monew.monew_batch.job.api_article_collection.reader.NaverArticleApiReader;
 import com.monew.monew_batch.job.api_article_collection.writer.NaverArticleApiWriter;
-import com.monew.monew_batch.job.api_article_collection.writer.NotificationWriter;
 import com.monew.monew_batch.job.common.listener.JobProcessedCountListener;
+import com.monew.monew_batch.job.common.processor.NotificationProcessor;
+import com.monew.monew_batch.job.common.reader.NotificationReader;
+import com.monew.monew_batch.job.common.writer.NotificationWriter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,8 +33,8 @@ public class ApiArticleCollectionJobConfig {
 	private final NaverArticleApiWriter naverArticleApiWriter;
 	private final NaverArticleApiProcessor naverArticleApiProcessor;
 
-	private final InterestReader interestReader;
-	private final InterestProcessor interestProcessor;
+	private final NotificationReader notificationReader;
+	private final NotificationProcessor notificationProcessor;
 	private final NotificationWriter notificationWriter;
 
 	private final JobProcessedCountListener jobProcessedCountListener;
@@ -52,13 +52,13 @@ public class ApiArticleCollectionJobConfig {
 	}
 
 	@Bean
-	public Step interestStep() {
+	public Step naverInterestStep() {
 		int chunk = 100;
 
-		return new StepBuilder("addNotificationStep", jobRepository)
+		return new StepBuilder("addNaverNotificationStep", jobRepository)
 			.<Interest, Interest>chunk(chunk, platformTransactionManager)
-			.reader(interestReader)
-			.processor(interestProcessor)
+			.reader(notificationReader)
+			.processor(notificationProcessor)
 			.writer(notificationWriter)
 			.build();
 	}
@@ -68,7 +68,7 @@ public class ApiArticleCollectionJobConfig {
 		return new JobBuilder(JobName.API_ARTICLE_COLLECTION_JOB.getName(), jobRepository)
 			.listener(jobProcessedCountListener)
 			.start(naverNewsStep())
-			.next(interestStep())
+			.next(naverInterestStep())
 			.build();
 	}
 }
