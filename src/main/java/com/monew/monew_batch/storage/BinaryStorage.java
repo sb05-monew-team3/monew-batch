@@ -5,9 +5,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 public interface BinaryStorage {
-	UUID put(UUID id, Instant date, byte[] data);
+	UUID put(UUID id, Instant date, String keyword, byte[] data);
 
-	InputStream get(UUID id, Instant date);
+	InputStream get(UUID id, String keyword, Instant date);
 
-	Boolean exists(UUID id, Instant date);
+	Boolean exists(UUID id, String keyword, Instant date);
 }
