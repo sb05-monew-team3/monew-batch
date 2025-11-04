@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.common.processor;
+package com.monew.monew_batch.job.rss_article_collection.processor;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;

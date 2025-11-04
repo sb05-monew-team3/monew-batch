@@ -12,4 +12,6 @@ public interface InterestKeywordRepository extends JpaRepository<InterestKeyword
 
 	@Query("SELECT DISTINCT i.name FROM InterestKeyword i")
 	List<String> findDistinctNames();
+
+	List<InterestKeyword> findByName(String name);
 }

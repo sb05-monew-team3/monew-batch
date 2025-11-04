@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.notification;
+package com.monew.monew_batch.job.notification_delete;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

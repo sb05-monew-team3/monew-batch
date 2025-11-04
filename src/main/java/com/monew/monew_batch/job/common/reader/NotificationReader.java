@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.api_article_collection.reader;
+package com.monew.monew_batch.job.common.reader;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InterestReader implements ItemStreamReader<Interest> {
+public class NotificationReader implements ItemStreamReader<Interest> {
 
 	private final InterestRepository interestRepository;
 
@@ -31,11 +31,11 @@ public class InterestReader implements ItemStreamReader<Interest> {
 			interests = interestRepository.findAll();
 
 			if (interests.isEmpty()) {
-				log.warn("[네이버 기사 알림 추가] 처리할 관심사가 없습니다.");
+				log.warn("[ 기사 알림 추가] 처리할 관심사가 없습니다.");
 				return;
 			}
 
-			log.info("[네이버 기사 알림 추가] 총 {}개의 관심사 조회 완료", interests.size());
+			log.info("[ 기사 알림 추가] 총 {}개의 관심사 조회 완료", interests.size());
 			interestIterator = interests.iterator();
 		}
 	}
@@ -43,18 +43,18 @@ public class InterestReader implements ItemStreamReader<Interest> {
 	@Override
 	public Interest read() {
 		if (interestIterator == null || !interestIterator.hasNext()) {
-			log.info("[네이버 기사 알림 추가] 관심사 읽기 완료");
+			log.info("[ 기사 알림 추가] 관심사 읽기 완료");
 			return null;
 		}
 
 		Interest interest = interestIterator.next();
-		log.info("[네이버 기사 알림 추가] 관심사 읽기 - ID: {}, 이름: {}", interest.getId(), interest.getName());
+		log.info("[ 기사 알림 추가] 관심사 읽기 - ID: {}, 이름: {}", interest.getId(), interest.getName());
 		return interest;
 	}
 
 	@Override
 	public void close() {
-		log.info("[네이버 기사 알림 추가] Reader 종료");
+		log.info("[ 기사 알림 추가] Reader 종료");
 		interests = null;
 		interestIterator = null;
 	}

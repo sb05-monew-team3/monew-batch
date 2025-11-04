@@ -9,14 +9,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.monew.monew_batch.entity.Interest;
 import com.monew.monew_batch.job.JobName;
 import com.monew.monew_batch.job.common.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.common.listener.JobProcessedCountListener;
-import com.monew.monew_batch.job.common.processor.ArticleDedupProcessor;
-import com.monew.monew_batch.job.common.writer.ArticleItemWriter;
+import com.monew.monew_batch.job.common.processor.NotificationProcessor;
+import com.monew.monew_batch.job.common.reader.NotificationReader;
+import com.monew.monew_batch.job.common.writer.NotificationWriter;
+import com.monew.monew_batch.job.rss_article_collection.processor.ArticleDedupProcessor;
 import com.monew.monew_batch.job.rss_article_collection.reader.ChosunArticleRssReader;
 import com.monew.monew_batch.job.rss_article_collection.reader.HankyungArticleRssReader;
 import com.monew.monew_batch.job.rss_article_collection.reader.YonhapArticleRssReader;
+import com.monew.monew_batch.job.rss_article_collection.writer.ArticleItemWriter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +37,10 @@ public class RssArticleCollectionJobConfig {
 
 	private final ArticleDedupProcessor articleDedupProcessor;
 	private final ArticleItemWriter articleItemWriter;
+
+	private final NotificationReader notificationReader;
+	private final NotificationProcessor notificationProcessor;
+	private final NotificationWriter notificationWriter;
 
 	private final JobProcessedCountListener jobProcessedCountListener;
 	private int chunk = 100;
@@ -73,12 +81,25 @@ public class RssArticleCollectionJobConfig {
 	}
 
 	@Bean
+	public Step rssInterestStep() {
+		int chunk = 100;
+
+		return new StepBuilder("addRssNotificationStep", jobRepository)
+			.<Interest, Interest>chunk(chunk, platformTransactionManager)
+			.reader(notificationReader)
+			.processor(notificationProcessor)
+			.writer(notificationWriter)
+			.build();
+	}
+
+	@Bean
 	public Job rssArticleCollectionJob() {
 		return new JobBuilder(JobName.RSS_ARTICLE_COLLECTION_JOB.getName(), jobRepository)
 			.listener(jobProcessedCountListener)
 			.start(hankyungNewsStep())
 			.next(chosunNewsStep())
 			.next(yonhapNewsStep())
+			.next(rssInterestStep())
 			.build();
 	}
 
