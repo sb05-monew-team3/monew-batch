@@ -28,9 +28,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	private static final String PATH = "article/";
 
 	@Override
-	public UUID put(UUID id, Instant date, String keyword, byte[] data) {
+	public UUID put(UUID id, Instant date, String interest, byte[] data) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + keyword + "/" + formattedDate + "/" + id;
+		String key = PATH + interest + "/" + formattedDate + "/" + id;
 
 		s3.putObject(b -> b.bucket(config.getBucket())
 			.key(key), RequestBody.fromBytes(data));
@@ -39,9 +39,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	}
 
 	@Override
-	public InputStream get(UUID id, String keyword, Instant date) {
+	public InputStream get(UUID id, String interest, Instant date) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + keyword + "/" + formattedDate + "/" + id;
+		String key = PATH + interest + "/" + formattedDate + "/" + id;
 
 		return s3.getObject(b -> b.bucket(config.getBucket())
 			.key(key));
@@ -52,9 +52,9 @@ public class S3BinaryStorage implements BinaryStorage {
 	 * 벌크식으로 검사하는 방식이 있지 않을까?
 	 */
 	@Override
-	public Boolean exists(UUID id, String keyword, Instant date) {
+	public Boolean exists(UUID id, String interest, Instant date) {
 		String formattedDate = getDateFromInstant(date);
-		String key = PATH + keyword + "/" + formattedDate + "/" + id;
+		String key = PATH + interest + "/" + formattedDate + "/" + id;
 
 		try {
 			HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
