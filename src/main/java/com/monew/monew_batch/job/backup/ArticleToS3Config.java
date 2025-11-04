@@ -18,9 +18,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.monew.monew_batch.entity.Article;
 import com.monew.monew_batch.job.JobName;
-import com.monew.monew_batch.job.common.listener.ArticleBackupSkipListener;
+import com.monew.monew_batch.job.backup.listener.ArticleBackupSkipListener;
+import com.monew.monew_batch.job.backup.writer.ArticleToS3Writer;
 import com.monew.monew_batch.job.common.listener.JobProcessedCountListener;
-import com.monew.monew_batch.job.common.writer.ArticleToS3Writer;
 import com.monew.monew_batch.repository.ArticleRepository;
 import com.monew.monew_batch.storage.BinaryStorage;
 
