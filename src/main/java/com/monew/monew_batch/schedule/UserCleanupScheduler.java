@@ -1,11 +1,15 @@
 package com.monew.monew_batch.schedule;
 
-import com.monew.monew_batch.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.monew.monew_batch.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -14,14 +18,14 @@ public class UserCleanupScheduler {
 
 	private final UserRepository userRepository;
 
-	@Transactional
-	@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 0 1 * * *")
 	public void cleanupDeletedUsers() {
 		log.info("[UserCleanupScheduler] 삭제 스케줄러 실행 시작");
 
 		try {
-			long count = userRepository.deleteUsersMarkedAsDeleted();
-			log.info("[UserCleanupScheduler] 삭제된 사용자 수: {}", count);
+			Instant threshold = Instant.now().minus(1, ChronoUnit.DAYS);
+			int i = userRepository.deleteByDeletedAtBefore(threshold);
+			log.info("[UserCleanupScheduler] 삭제 완료 : {}", i);
 		} catch (Exception e) {
 			log.error("[UserCleanupScheduler] 삭제 중 오류 발생: {}", e.getMessage(), e);
 		}
