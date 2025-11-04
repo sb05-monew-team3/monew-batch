@@ -1,4 +1,4 @@
-package com.monew.monew_batch.job.api_article_collection.writer;
+package com.monew.monew_batch.job.common.writer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class NotificationWriter implements ItemWriter<Interest> {
 	@Override
 	public void write(Chunk<? extends Interest> interests) {
 		if (interests == null || interests.isEmpty()) {
-			log.debug("[네이버 기사 알림 추가] 저장할 알림이 없습니다.");
+			log.debug("[ 기사 알림 추가] 저장할 알림이 없습니다.");
 			return;
 		}
 
@@ -46,7 +46,7 @@ public class NotificationWriter implements ItemWriter<Interest> {
 				User user = sub.getUser();
 
 				if (user == null) {
-					log.warn("[네이버 기사 알림 추가] 구독 정보에 사용자가 없음 - Subscription ID: {}", sub.getId());
+					log.warn("[ 기사 알림 추가] 구독 정보에 사용자가 없음 - Subscription ID: {}", sub.getId());
 					continue;
 				}
 
@@ -61,15 +61,15 @@ public class NotificationWriter implements ItemWriter<Interest> {
 					.build());
 			}
 
-			log.info("[네이버 기사 알림 추가] 관심사 '{}'에 대해 {}명의 구독자에게 알림 생성",
+			log.info("[ 기사 알림 추가] 관심사 '{}'에 대해 {}명의 구독자에게 알림 생성",
 				interest.getName(), fullInterest.getSubscriptions().size());
 		}
 
 		try {
 			notificationsRepository.saveAll(allNotifications);
-			log.info("[네이버 기사 알림 추가] 총 {}건의 알림 저장 완료", allNotifications.size());
+			log.info("[ 기사 알림 추가] 총 {}건의 알림 저장 완료", allNotifications.size());
 		} catch (Exception e) {
-			log.error("[네이버 기사 알림 추가] 알림 저장 실패 - 대상: {}건", allNotifications.size(), e);
+			log.error("[ 기사 알림 추가] 알림 저장 실패 - 대상: {}건", allNotifications.size(), e);
 			throw e;
 		}
 	}
