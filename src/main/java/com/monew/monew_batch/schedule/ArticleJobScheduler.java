@@ -14,11 +14,11 @@ import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import com.monew.monew_batch.job.JobName;
 import com.monew.monew_batch.job.common.monitor.BatchMetricsUtil;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,7 @@ public class ArticleJobScheduler {
 	private final Job articleBackUpJob;
 	private final Job notificationDeleteJob;
 
-	@Scheduled(cron = "0 0 1 * * *")
+	// @Scheduled(cron = "0 0 1 * * *")
 	public void runNotificationDeleteJob() {
 		JobName jobName = JobName.NOTIFICATION_DELETE_JOB;
 		long startTime = System.currentTimeMillis();
@@ -57,7 +57,8 @@ public class ArticleJobScheduler {
 		}
 	}
 
-	@Scheduled(cron = "0 0 3 * * *")
+	// @Scheduled(cron = "0 0/5 * * * *")
+	@PostConstruct
 	public void runArticleToS3Job() {
 		JobName jobName = JobName.ARTICLE_BACKUP_TO_S3_JOB;
 		long startTime = System.currentTimeMillis();
@@ -77,7 +78,7 @@ public class ArticleJobScheduler {
 		}
 	}
 
-	@Scheduled(cron = "0 0 0/12 * * *")
+	// @Scheduled(cron = "0 0/2 * * * *")
 	public void runRssArticleCollectionJob() {
 		JobName jobName = JobName.RSS_ARTICLE_COLLECTION_JOB;
 		long startTime = System.currentTimeMillis();
@@ -97,7 +98,7 @@ public class ArticleJobScheduler {
 		}
 	}
 
-	@Scheduled(cron = "0 0 0/3 * * *")
+	// @Scheduled(cron = "0 0/5 * * * *")
 	public void runApiArticleCollectionJob() {
 		JobName jobName = JobName.API_ARTICLE_COLLECTION_JOB;
 		long startTime = System.currentTimeMillis();
