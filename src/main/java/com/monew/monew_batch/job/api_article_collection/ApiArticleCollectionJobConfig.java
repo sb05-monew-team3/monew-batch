@@ -18,7 +18,6 @@ import com.monew.monew_batch.job.api_article_collection.reader.InterestReader;
 import com.monew.monew_batch.job.api_article_collection.reader.NaverArticleApiReader;
 import com.monew.monew_batch.job.api_article_collection.writer.NaverArticleApiWriter;
 import com.monew.monew_batch.job.api_article_collection.writer.NotificationWriter;
-import com.monew.monew_batch.job.common.dto.ArticleSaveDto;
 import com.monew.monew_batch.job.common.listener.JobProcessedCountListener;
 
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class ApiArticleCollectionJobConfig {
 		int chunk = 100;
 
 		return new StepBuilder("naverNewsStep", jobRepository)
-			.<NaverArticleProcessorDto, ArticleSaveDto>chunk(chunk, platformTransactionManager)
+			.<NaverArticleProcessorDto, NaverArticleProcessorDto>chunk(chunk, platformTransactionManager)
 			.reader(naverArticleApiReader)
 			.processor(naverArticleApiProcessor)
 			.writer(naverArticleApiWriter)

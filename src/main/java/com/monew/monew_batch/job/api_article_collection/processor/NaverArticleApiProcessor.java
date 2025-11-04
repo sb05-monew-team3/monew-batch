@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NaverArticleApiProcessor implements ItemProcessor<NaverArticleProcessorDto, ArticleSaveDto> {
+public class NaverArticleApiProcessor implements ItemProcessor<NaverArticleProcessorDto, NaverArticleProcessorDto> {
 
 	private final ArticleRepository articleRepository;
 	private StepExecution stepExecution;
@@ -27,7 +27,7 @@ public class NaverArticleApiProcessor implements ItemProcessor<NaverArticleProce
 	}
 
 	@Override
-	public ArticleSaveDto process(NaverArticleProcessorDto item) throws Exception {
+	public NaverArticleProcessorDto process(NaverArticleProcessorDto item) throws Exception {
 
 		String keyword = item.getKeyword();
 		ArticleSaveDto articleSaveDto = item.getArticleSaveDto();
@@ -43,12 +43,10 @@ public class NaverArticleApiProcessor implements ItemProcessor<NaverArticleProce
 		}
 
 		ExecutionContext jobContext = stepExecution.getJobExecution().getExecutionContext();
-
 		int currentCount = jobContext.containsKey(keyword) ? jobContext.getInt(keyword) : 0;
-
 		jobContext.putInt(keyword, currentCount + 1);
 
-		return articleSaveDto;
+		return item;
 	}
 }
 
