@@ -1,0 +1,29 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: ${SPRING_BOOT_ADMIN_URL}
+        enabled: true
+        instance:
+          name: monew_batch
+          service-url: ${SERVICE_URL}
+          management-base-url: ${MANAGEMENT_BASE_URL:${SERVICE_URL}}
+      period: 30s
+
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: never
+
+  datasource-data:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://${DB_DATA_HOST}:${DB_DATA_PORT}/${DB_DATA_NAME}
+    username: ${DB_DATA_USERNAME}
+    password: ${DB_DATA_PASSWORD}
+
+  datasource-meta:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://${DB_META_HOST}:${DB_META_PORT}/${DB_META_NAME}
+    username: ${DB_META_USERNAME}
+    password: ${DB_META_PASSWORD}
